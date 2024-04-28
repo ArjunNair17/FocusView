@@ -5,7 +5,12 @@ const app = express();
 const testRoutes = require("./routes/api/tests");
 
 const { initializeApp } = require("firebase/app");
-const { getFirestore, collection, getDocs } = require("firebase/firestore");
+const {
+  getFirestore,
+  collection,
+  getDocs,
+  listCollections,
+} = require("firebase/firestore");
 
 const hostname = "127.0.0.1";
 const port = 8080;
@@ -26,12 +31,17 @@ const fire = initializeApp(firebaseConfig);
 const db = getFirestore(fire);
 
 //DEFAULT get route
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
+
+//route to test getting data from firestore
 app.get("/data", async (req, res) => {
   try {
-    const dummyCol = collection(db, "dummy");
-    const snap = await getDocs(dummyCol);
+    const coll = collection(db, "collection1");
+    const snap = await getDocs(coll);
     const data = snap.docs.map((doc) => doc.data());
-    console.log(data);
+    console.log("data: ", data);
     res.json(data);
   } catch (error) {
     console.error("Error getting data from Firestore", error);
@@ -41,13 +51,6 @@ app.get("/data", async (req, res) => {
 
 //use the methods in routes/api/tests when a user calls '/api/tests'
 app.use("/api/tests", testRoutes);
-
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
-app.get("/test", (req, res) => {
-  res.send("This is a test");
-});
 
 // Prints a log once the server starts listening
 app.listen(port, () => {

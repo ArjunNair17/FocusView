@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -13,14 +14,23 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // gives us an auth instance
-const auth = getAuth(app);
+// const auth = getAuth(app);
 
 // in order to use this auth instance elsewhere
-export default auth;
+// export default auth;
+
+//retrieve some data from the dummy collection
+async function getData(db) {
+  const dummyCol = collection(db, "dummy");
+  const snap = await getDocs(dummyCol);
+  const data = snap.docs.map((doc) => doc.data());
+  return data;
+}

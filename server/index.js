@@ -1,10 +1,11 @@
+require("dotenv").config();
 // Create express server
 const express = require("express");
 const app = express();
 const testRoutes = require("./routes/api/tests");
 
-const initializeApp = require("firebase-app");
-const { getFirestore, collection, getDocs } = require("firebase-firestore");
+const { initializeApp } = require("firebase/app");
+const { getFirestore, collection, getDocs } = require("firebase/firestore");
 
 const hostname = "127.0.0.1";
 const port = 8080;
@@ -19,12 +20,13 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
+
 // Initialize Firebase
 const fire = initializeApp(firebaseConfig);
 const db = getFirestore(fire);
 
 //DEFAULT get route
-app.get("/", async (req, res) => {
+app.get("/data", async (req, res) => {
   try {
     const dummyCol = collection(db, "dummy");
     const snap = await getDocs(dummyCol);
@@ -39,6 +41,13 @@ app.get("/", async (req, res) => {
 
 //use the methods in routes/api/tests when a user calls '/api/tests'
 app.use("/api/tests", testRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
+app.get("/test", (req, res) => {
+  res.send("This is a test");
+});
 
 // Prints a log once the server starts listening
 app.listen(port, () => {

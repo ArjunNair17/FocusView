@@ -10,8 +10,6 @@ const Register = () => {
 
     }
 
-    // onchange={(e) => setEmail(e.target.value)}
-
     return ( 
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">Register
             <div className="max-w-md w-full space-y-8">
@@ -20,7 +18,7 @@ const Register = () => {
                         Register your account
                     </h2>
                 </div>
-                <form className="mt-8 space-y-6">
+                <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
                             <input
@@ -33,6 +31,7 @@ const Register = () => {
                                     rounded-t-md bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:outline-none 
                                     focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Email address"
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div>
@@ -44,6 +43,7 @@ const Register = () => {
                                 required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 placeholder-gray-500 rounded-t-md bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Password"
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
                         <div>
@@ -54,7 +54,8 @@ const Register = () => {
                                 autoComplete="current-password"
                                 required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 placeholder-gray-500 rounded-t-md bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Password"                
+                                placeholder="Password"      
+                                onChange={(e) => setConfirmPassword(e.target.value)}          
                             />
                         </div>
                     </div>

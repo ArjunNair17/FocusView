@@ -1,0 +1,17 @@
+service: focusview // name of service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-west-2
+
+functions:
+  api:
+    handler: ./server/index.js // path of handler
+    name: express-api-function
+    events:
+      - httpApi: '*' // all paths
+
+plugins:
+- serverless-offline // plugin added to run locally

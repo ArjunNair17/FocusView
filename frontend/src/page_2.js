@@ -5,13 +5,13 @@ import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField'; // Import TextField from Material-UI
+import Webcam from "react-webcam";
 
 function Page2() {
   // State variables for each input field
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
-  
 
   // Function to handle changes in each input field
   const handleHoursChange = (event) => {
@@ -28,16 +28,28 @@ function Page2() {
 
   // Function to handle submit button click
   const handleSubmit = () => {
-    window.hours = hours
-    window.minutes = minutes
-    window.seconds = seconds
+    window.hours = hours;
+    window.minutes = minutes;
+    window.seconds = seconds;
     console.log("Hours, minutes, seconds", window.hours, window.minutes, window.seconds); // Debugging
+  };
+
+  const videoConstraints = {
+    facingMode: "user"
   };
 
   return (
     <div className="App">
+      {/* Render the WebcamCapture component */}
+     
       <header className="App-header">
+        <div style={{ marginTop: '20px' }}>
+            <Webcam
+              videoConstraints={videoConstraints}
+            />
+          </div>
         
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <TextField
           id="hours-input"
           label="Hours"
@@ -59,6 +71,7 @@ function Page2() {
           value={seconds}
           onChange={handleSecondsChange}
         />
+        </div>
         
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <FormGroup row>
@@ -69,7 +82,7 @@ function Page2() {
           </FormGroup>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between' , width: '300px'}}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
           <Button variant="contained" color="primary">
             <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link>
           </Button>
@@ -78,6 +91,7 @@ function Page2() {
             <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
           </Button>
         </div>
+
         
       </header>
     </div>

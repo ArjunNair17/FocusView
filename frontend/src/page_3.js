@@ -10,6 +10,11 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 // Your CircularProgressWithLabel component
@@ -30,7 +35,7 @@ function CircularProgressWithLabel(props) {
         }}
       >
         <Typography variant="caption" component="div" color="text.secondary">
-          {`${Math.round(props.value)}%`}
+          {"Study " + `${Math.round(props.value)}%`}
         </Typography>
       </Box>
     </Box>
@@ -78,6 +83,18 @@ function Page3() {
         setIsPaused(!isPaused); // Pause the timer
     };
 
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
+
     
  return (
     <div className="App">
@@ -90,11 +107,27 @@ function Page3() {
             <IconButton onClick={handlePauseClick}>
               <PauseCircleIcon style={{ fontSize: 40 }} />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={handleClickOpen}>
             <CancelIcon style={{ fontSize: 40 }} />
             </IconButton>
         </div>
-        
+        <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+            {"End Session?"}
+            </DialogTitle>
+           
+            <DialogActions>
+            <Button onClick={handleClose}>No</Button>
+            <Button onClick={handleClose} autoFocus>
+                Yes
+            </Button>
+            </DialogActions>
+        </Dialog>
       </header>
     </div>
   );

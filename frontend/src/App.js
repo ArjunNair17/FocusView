@@ -12,6 +12,9 @@ import Button from '@mui/material/Button';
 import Page1 from './page_1'; 
 import Page2 from './page_2'; 
 import { Page3 } from './page_3';
+import Stack from '@mui/material/Stack';
+
+
 
 function App() {
   return (

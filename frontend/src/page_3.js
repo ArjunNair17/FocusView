@@ -9,6 +9,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+
 
 // Your CircularProgressWithLabel component
 function CircularProgressWithLabel(props) {
@@ -42,16 +44,30 @@ CircularProgressWithLabel.propTypes = {
 
 // Your Page3 component
 function Page3() {
-  const [progress, setProgress] = React.useState(10);
+  const [progress, setProgress] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
 
 
+  // Calculate total duration whenever hours, minutes, or seconds change
+  const totalDuration = React.useMemo(() => {
+    const hours = parseInt(window.hours) || 0;
+    const minutes = parseInt(window.minutes) || 0;
+    const seconds = parseInt(window.seconds) || 0;
+    return (seconds * 1000) + (minutes * 60 * 1000) + (hours * 60 * 60 * 1000);
+  }, [window.hours, window.minutes, window.seconds]);
+
+  console.log("duration", totalDuration); // Debugging
+  //const totalDuration = (parseInt(window.seconds) * 1000) + (parseInt(window.minutes) * 60 * 1000) + (parseInt(window.hours) * 60 * 60 * 1000);; // Total duration in milliseconds
+  //console.log("duration",totalDuration); // Debugging
+  const granularity = 1000; // Update progress every second
+  const increment = (granularity / totalDuration) * 100; // Calculate increment percentage
+
   React.useEffect(() => {
     const timer = setInterval(() => {
-      if (!isPaused) {
-        setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-      }
-    }, 800);
+        if (!isPaused) {
+          setProgress((prevProgress) => (prevProgress + increment >= 100 ? 0 : prevProgress + increment));
+        }
+      }, granularity);
     
     return () => {
       clearInterval(timer);
@@ -62,6 +78,7 @@ function Page3() {
         setIsPaused(!isPaused); // Pause the timer
     };
 
+    
  return (
     <div className="App">
       <header className="App-header">

@@ -31,7 +31,6 @@ app.get("/data", async (req, res) => {
 //use the methods in routes/api/tests when a user calls '/api/tests'
 app.use("/api/tests", testRoutes);
 
-// Prints a log once the server starts listening
-app.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+//using AWS Lambda instead:
+const serverless = require("serverless-http");
+module.exports.handler = serverless(app);

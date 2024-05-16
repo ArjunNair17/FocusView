@@ -15,7 +15,7 @@ RUN npm install
 
 # Starting our application
 # CMD [ "node", "index.js" ]
-CMD [ "index.handler" ]
+CMD [ "lambda.handler" ]
 
 # Exposing server port
 EXPOSE 8080

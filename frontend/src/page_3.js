@@ -8,6 +8,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 
 // Your CircularProgressWithLabel component
 function CircularProgressWithLabel(props) {
@@ -38,28 +39,43 @@ CircularProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
+
 // Your Page3 component
 function Page3() {
   const [progress, setProgress] = React.useState(10);
+  const [isPaused, setIsPaused] = React.useState(false);
+
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      if (!isPaused) {
+        setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      }
     }, 800);
+    
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [isPaused]);
 
-  return (
+    const handlePauseClick = () => {
+        setIsPaused(!isPaused); // Pause the timer
+    };
+
+ return (
     <div className="App">
       <header className="App-header">
         <CircularProgressWithLabel value={progress} size={300} />
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <VideoCameraFrontIcon/>
-          <PauseCircleIcon />
-          <CancelIcon />
+        <div style={{ display: 'flex', justifyContent: 'space-evenly'}}>
+            <IconButton>
+            <VideoCameraFrontIcon style={{ fontSize: 40 }} />
+            </IconButton>
+            <IconButton onClick={handlePauseClick}>
+              <PauseCircleIcon style={{ fontSize: 40 }} />
+            </IconButton>
+            <IconButton>
+            <CancelIcon style={{ fontSize: 40 }} />
+            </IconButton>
         </div>
         
       </header>

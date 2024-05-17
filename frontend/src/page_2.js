@@ -7,6 +7,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField'; // Import TextField from Material-UI
 import Webcam from "react-webcam";
 
+
 function Page2() {
   // State variables for each input field
   const [hours, setHours] = useState('');
@@ -76,9 +77,7 @@ function Page2() {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <FormGroup row>
             <FormControlLabel control={<Checkbox />} label="Posture" />
-            <FormControlLabel control={<Checkbox />} label="Phone Use" />
-            <FormControlLabel control={<Checkbox />} label="Skin Biting" />
-            <FormControlLabel control={<Checkbox />} label="Nail Picking" />
+            <FormControlLabel control={<Checkbox />} label="Eye Tracking" />
           </FormGroup>
         </div>
 

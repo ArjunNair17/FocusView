@@ -15,7 +15,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 // Your CircularProgressWithLabel component
 function CircularProgressWithLabel(props) {
@@ -46,12 +46,10 @@ CircularProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-
 // Your Page3 component
 function Page3() {
   const [progress, setProgress] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
-
 
   // Calculate total duration whenever hours, minutes, or seconds change
   const totalDuration = React.useMemo(() => {
@@ -62,71 +60,70 @@ function Page3() {
   }, [window.hours, window.minutes, window.seconds]);
 
   console.log("duration", totalDuration); // Debugging
-  //const totalDuration = (parseInt(window.seconds) * 1000) + (parseInt(window.minutes) * 60 * 1000) + (parseInt(window.hours) * 60 * 60 * 1000);; // Total duration in milliseconds
-  //console.log("duration",totalDuration); // Debugging
+
   const granularity = 1000; // Update progress every second
   const increment = (granularity / totalDuration) * 100; // Calculate increment percentage
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-        if (!isPaused) {
-          setProgress((prevProgress) => (prevProgress + increment >= 100 ? 0 : prevProgress + increment));
-        }
-      }, granularity);
-    
+      if (!isPaused) {
+        setProgress((prevProgress) => (prevProgress + increment >= 100 ? 0 : prevProgress + increment));
+      }
+    }, granularity);
+
     return () => {
       clearInterval(timer);
     };
   }, [isPaused]);
 
-    const handlePauseClick = () => {
-        setIsPaused(!isPaused); // Pause the timer
-    };
+  const handlePauseClick = () => {
+    setIsPaused(!isPaused); // Toggle pause state
+  };
 
-    const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-
-
-    
- return (
+  return (
     <div className="App">
       <header className="App-header">
         <CircularProgressWithLabel value={progress} size={300} />
-        <div style={{ display: 'flex', justifyContent: 'space-evenly'}}>
-            <IconButton>
+        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+          <IconButton>
             <VideoCameraFrontIcon style={{ fontSize: 40 }} />
-            </IconButton>
-            <IconButton onClick={handlePauseClick}>
+          </IconButton>
+          <IconButton onClick={handlePauseClick}>
+            {isPaused ? (
+              <PlayCircleIcon style={{ fontSize: 40 }} />
+            ) : (
               <PauseCircleIcon style={{ fontSize: 40 }} />
-            </IconButton>
-            <IconButton onClick={handleClickOpen}>
+            )}
+          </IconButton>
+          <IconButton onClick={handleClickOpen}>
             <CancelIcon style={{ fontSize: 40 }} />
-            </IconButton>
+          </IconButton>
         </div>
         <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">
+          <DialogTitle id="alert-dialog-title">
             {"End Session?"}
-            </DialogTitle>
-           
-            <DialogActions>
+          </DialogTitle>
+          <DialogActions>
             <Button onClick={handleClose}>No</Button>
             <Button onClick={handleClose} autoFocus>
-                Yes
+              Yes
             </Button>
-            </DialogActions>
+          </DialogActions>
         </Dialog>
       </header>
     </div>

@@ -1,4 +1,3 @@
-# FROM public.ecr.aws/lambda/nodejs:20
 FROM node:18.0.0-alpine
 
 # Declaring env

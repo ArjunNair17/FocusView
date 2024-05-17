@@ -11,6 +11,7 @@ services:
   server:
     build:
       context: ./server
+    image: focusview
     environment:
       NODE_ENV: production
     ports:

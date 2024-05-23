@@ -1,13 +1,40 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../contexts/AuthContext";
 
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    async function handleFormSubmit(e) {
+    const navigate = useNavigate();
+    const { currentUser, register } = useAuth();
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => { //  prevent users from accessing reg page while authed
+        if (currentUser) {
+            navigate("/")
+        }
+    }, [currentUser, navigate])
 
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+
+        if (password !== confirmPassword) {
+            return alert("Passwords do not match")
+        }
+
+        try {
+            setLoading(true)
+            await register(email, password)
+            navigate("/profile")
+        } catch (e) {
+            console.log(e)
+            alert("Failed to register")
+        }
+
+        setLoading(false)
     }
 
     return ( 

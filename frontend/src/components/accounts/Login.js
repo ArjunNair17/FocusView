@@ -1,12 +1,34 @@
-import { Link } from "react-router-dom"
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
+    const navigate = useNavigate();
+    const { currentUser, login } = useAuth();
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => { //  prevent users from accessing reg page while authed
+        if (currentUser) {
+            navigate("/")
+        }
+    }, [currentUser, navigate])
+
     async function handleFormSubmit(e) {
         e.preventDefault();
+
+        try {
+            setLoading(true)
+            await login(email, password)
+            navigate("/profile")
+        } catch (e) {
+            console.log(e)
+            alert("Failed to login")
+        }
+
+        setLoading(false)
     }
 
     return ( 

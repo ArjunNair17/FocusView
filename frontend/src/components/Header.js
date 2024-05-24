@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { signOut, onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../config/firebase';
 
@@ -34,8 +34,8 @@ const Header = () => {
                     </>
                     :
                     <>
-                        <Link className='text-sm text-blue-600 underline' to={'/login'}>Login</Link>
-                        <Link className='text-sm text-blue-600 underline' to={'/register'}>Register New Account</Link>
+                        <a href='/login'>Login</a>
+                        <a href='/register'>Register</a>
                     </>
             }
 

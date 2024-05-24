@@ -1,19 +1,20 @@
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
-import Login from './components/accounts/Login';
-import Register from './components/accounts/Register';
-import { AuthProvider } from './contexts/AuthContext';
+import Header from './components/Header';
+import Login from './components/Login';
+import Register from './components/Register';
+// import Auth from './components/Auth';
+
 
 function App() {
 	return (
-		<AuthProvider>
 			<Router>
+				<Header />
 				<Routes>
-					<Route exact path="/register" element={<Register />}/>
-					<Route exact path="/login" element={<Login />}/>
+					<Route exact path="/login" element={<Login />} />
+					<Route exact path="/register" element={<Register />} />
 				</Routes>
 			</Router>
-		</AuthProvider>
 	);
 }
 

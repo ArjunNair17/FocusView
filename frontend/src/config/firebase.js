@@ -1,13 +1,8 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"
+import { getAuth, GoogleAuthProvider } from "firebase/auth"
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// import { getAnalytics } from "firebase/analytics";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 // const firebaseConfig = {
 //   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -19,12 +14,24 @@ import { getAnalytics } from "firebase/analytics";
 //   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 // };
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDgwnkWWGCxGkGemA5T5hTFS4fN3kXCn10",
+  authDomain: "focusview-c3a33.firebaseapp.com",
+  projectId: "focusview-c3a33",
+  storageBucket: "focusview-c3a33.appspot.com",
+  messagingSenderId: "1069093234322",
+  appId: "1:1069093234322:web:d2354ded27db1de9aca84b",
+  measurementId: "G-DP429NN7FS"
+}
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+
+
 const db = getFirestore(app);
-const auth = getAuth(app)
-export default auth;
+
+
 
 //retrieve some data from the dummy collection
 async function getData(db) {

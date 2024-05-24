@@ -9,7 +9,7 @@ function Page1() {
     return (
       <div className="App">
         <header className="App-header">
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="inherit">
             <Link to="/page_2" style={{ textDecoration: 'none', color: 'inherit' }}>Begin Session</Link>
           </Button>
         </header>

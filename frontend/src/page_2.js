@@ -181,11 +181,11 @@ function Page2() {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="inherit">
             <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link>
           </Button>
           
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
+          <Button variant="contained" color="inherit" onClick={handleSubmit}>
             <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
           </Button>
         </div>

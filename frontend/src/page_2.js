@@ -6,13 +6,23 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField'; // Import TextField from Material-UI
 import Webcam from "react-webcam";
-
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 function Page2() {
   // State variables for each input field
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
 
   // Function to handle changes in each input field
   const handleHoursChange = (event) => {
@@ -36,8 +46,13 @@ function Page2() {
   };
 
   const videoConstraints = {
-    facingMode: "user"
+    width: 535, // Adjust the width to your desired size
+    height: 300, // Adjust the height to your desired size
+    facingMode: 'user',
   };
+
+  
+
 
   return (
     <div className="App">
@@ -49,7 +64,37 @@ function Page2() {
               videoConstraints={videoConstraints}
             />
           </div>
-        
+          <button onClick={openModal}>Trigger</button>
+      <Popup
+        open={isOpen}
+        modal
+        onClose={closeModal}
+        contentStyle={{
+          width: '623px',
+          padding: '30px',
+          borderRadius: '15px',
+          height: '505px',
+          backgroundColor: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        <div style={{ marginTop: '10px' }}>Recalibrating...</div>
+        <div style={{ marginTop: '30px' }}>
+          <Webcam
+            videoConstraints={videoConstraints}
+            style={{
+              borderRadius: '35px'
+            }}
+          />
+        </div>
+        <div style={{ marginTop: '42px' }}>
+        <Button variant="contained" color="primary" onClick={closeModal}>
+          Cancel
+        </Button>
+        </div>
+      </Popup>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <TextField
           id="hours-input"
@@ -77,7 +122,9 @@ function Page2() {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <FormGroup row>
             <FormControlLabel control={<Checkbox />} label="Posture" />
-            <FormControlLabel control={<Checkbox />} label="Eye Tracking" />
+            <FormControlLabel control={<Checkbox />} label="Phone Use" />
+            <FormControlLabel control={<Checkbox />} label="Skin Biting" />
+            <FormControlLabel control={<Checkbox />} label="Nail Picking" />
           </FormGroup>
         </div>
 

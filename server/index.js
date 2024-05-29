@@ -2,7 +2,7 @@ require("dotenv").config({ path: "../.env" });
 // Create express server
 const express = require("express");
 const app = express();
-const testRoutes = require("./routes/api/tests");
+const userRoutes = require("./routes/api/users");
 const db = require("./config/firebase");
 const { collection, getDocs } = require("firebase/firestore");
 
@@ -28,8 +28,8 @@ app.get("/data", async (req, res) => {
   }
 });
 
-//use the methods in routes/api/tests when a user calls '/api/tests'
-app.use("/api/tests", testRoutes);
+//use the methods in routes/api/users when a user calls '/api/user'
+app.use("/api/user", userRoutes);
 
 // Prints a log once the server starts listening
 app.listen(port, () => {

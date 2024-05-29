@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Typography, ThemeProvider, createTheme } from '@mui/material';
 import { Gauge } from '@mui/x-charts/Gauge';
+import { LineChart } from '@mui/x-charts/LineChart';
+
 import Stack from '@mui/material/Stack';
 
 
@@ -37,6 +39,16 @@ function Page4() {
                 Posture
             </Typography>
             <Gauge width={200} height={200} value={10} color="#FFFFF"  style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}/>
+            <LineChart
+            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+            series={[
+                {
+                data: [2, 5.5, 2, 8.5, 1.5, 5],
+                },
+            ]}
+            width={370}
+            height={300}
+            />
             </Box>
 
             <Box
@@ -56,9 +68,20 @@ function Page4() {
                 Eye Tracking
             </Typography>
             <Gauge width={200} height={200} value={10}  style={{ color: '#FFF', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}/>
-            </Box>
+            <LineChart
+            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+            series={[
+                {
+                data: [2, 5.5, 2, 8.5, 1.5, 5],
+                },
+            ]}
+            width={370}
+            height={300}
+            />
+           </Box>
           </div>
         </ThemeProvider>
+            
       </header>
     </div>
   );

@@ -1,21 +1,15 @@
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import  Login from './components/Login';
 import Header from './components/Header';
-import Login from './components/Login';
 import Register from './components/Register';
-// import Auth from './components/Auth';
-import './App.css';
-// import Button from '@mui/material/Button';
 import Page1 from './components/page_1'; 
 import Page2 from './components/page_2'; 
 import { Page3 } from './components/page_3';
 import Page4 from './components/page_4';
-// import Stack from '@mui/material/Stack';
-
-
 
 function App() {
-	return (
+   return (
 			<Router>
 				<Header />
 				<Routes>

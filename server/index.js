@@ -1,6 +1,7 @@
 require("dotenv").config({ path: "../.env" });
 // Create express server
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 const userRoutes = require("./routes/api/users");
 const db = require("./config/firebase");
@@ -9,6 +10,7 @@ const { collection, getDocs } = require("firebase/firestore");
 const hostname = "127.0.0.1";
 const port = 8080;
 
+app.use(bodyParser.json());
 //DEFAULT get route
 app.get("/", (req, res) => {
   res.send("Hello");

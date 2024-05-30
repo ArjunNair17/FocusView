@@ -29,6 +29,10 @@
   font-size: calc(10px + 2vmin);
   color: rgb(0, 0, 0);
 }
+.CircularProgressWithLabel .Typography-root {
+  color: #FFF !important;
+}
+
 
 .App-link {
   color: #afb9bc;
@@ -43,4 +47,22 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Target LineChart container */
+.LineChart-container {
+  /* Set background color to white */
+  background-color: #FFF;
+}
+
+/* Target SVG elements inside LineChart */
+.LineChart-container svg {
+  /* Set stroke color of lines to white */
+  stroke: #FFF;
+}
+
+/* Target text elements inside LineChart */
+.LineChart-container text {
+  /* Set fill color of text to white */
+  fill: #FFF;
 }

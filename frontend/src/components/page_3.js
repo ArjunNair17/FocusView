@@ -34,7 +34,7 @@ function CircularProgressWithLabel(props) {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="header" component="div" color="text.secondary">
+        <Typography variant="header" component="div" style={{ color: '#FFF'}}>
           {"Study " + `${Math.round(props.value)}%`}
         </Typography>
       </Box>
@@ -93,22 +93,24 @@ function Page3() {
   return (
     <div className="App">
       <header className="App-header">
+     
         <CircularProgressWithLabel value={progress} size={300} />
         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
           <IconButton>
-            <VideoCameraFrontIcon style={{ fontSize: 40 }} />
+            <VideoCameraFrontIcon style={{ fontSize: 40 ,  color: '#FFFFFF'}} />
           </IconButton>
           <IconButton onClick={handlePauseClick}>
             {isPaused ? (
-              <PlayCircleIcon style={{ fontSize: 40 }} />
+              <PlayCircleIcon style={{ fontSize: 40 ,color: '#FFFFFF'}} />
             ) : (
-              <PauseCircleIcon style={{ fontSize: 40 }} />
+              <PauseCircleIcon style={{ fontSize: 40 ,color: '#FFFFFF'}} />
             )}
           </IconButton>
           <IconButton onClick={handleClickOpen}>
-            <CancelIcon style={{ fontSize: 40 }} />
+            <CancelIcon style={{ fontSize: 40 ,color: '#FFFFFF'}} />
           </IconButton>
         </div>
+        
         <Dialog
           open={open}
           onClose={handleClose}

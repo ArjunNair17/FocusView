@@ -48,11 +48,14 @@ function Calibration() {
 
   // Function to handle submit button click
   const handleSubmit = () => {
-    window.hours = hours;
-    window.minutes = minutes;
-    window.seconds = seconds;
-    console.log("Hours, minutes, seconds", window.hours, window.minutes, window.seconds); // Debugging
-    
+    localStorage.setItem('hours', hours)
+    localStorage.setItem('minutes', minutes)
+    localStorage.setItem('seconds', seconds)
+    // window.hours = hours;
+    // window.minutes = minutes;
+    // window.seconds = seconds;
+    // console.log("Hours, minutes, seconds", window.hours, window.minutes, window.seconds); // Debugging
+    // handleDisconnect();
   };
 
   const videoConstraints = {
@@ -112,23 +115,23 @@ function Calibration() {
         mediaRecorder.ondataavailable = async (event) => {
           if (event.data.size > 0) {
             const blob = event.data;
-            // const arrayBuffer = await blob.arrayBuffer();
-            // const buffer = new Uint8Array(arrayBuffer);
-            // const canvas = document.createElement('canvas');
-            // const ctx = canvas.getContext('2d');
-            // const videoElement = videoRef.current;
-            // canvas.width = videoElement.videoWidth;
-            // canvas.height = videoElement.videoHeight;
-            // ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const arrayBuffer = await blob.arrayBuffer();
+            const buffer = new Uint8Array(arrayBuffer);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const videoElement = videoRef.current;
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-            // canvas.toBlob((blob) => {
-            //   const reader = new FileReader();
-            //   reader.onload = () => {
-            //     const buffer = new Uint8Array(reader.result);
-            //     socketRef.current.emit('videoData', buffer);
-            //   };
-            //   reader.readAsArrayBuffer(blob);
-            // }, 'image/jpeg');
+            canvas.toBlob((blob) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const buffer = new Uint8Array(reader.result);
+                socketRef.current.emit('videoData', buffer);
+              };
+              reader.readAsArrayBuffer(blob);
+            }, 'image/jpeg');
           }
         };
 
@@ -177,18 +180,12 @@ function Calibration() {
 
 
   function handleDisconnect() {
-
-
     if(socketRef.current) {
       socketRef.current.emit("handleDisc");
     }
-
-
     if (videoRef.current && videoRef.current.srcObject) {
       videoRef.current.srcObject.getTracks().forEach(track => track.stop());
     }
-
-
   }
 
 
@@ -262,11 +259,13 @@ function Calibration() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
           <Button variant="contained" color="inherit">
-            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link>
+            <a href='/' style={{ textDecoration: 'none', color: 'inherit' }}>cancel</a>
+            {/* <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link> */}
           </Button>
           
           <Button variant="contained" color="inherit" onClick={handleSubmit}>
-            <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
+            <a href='/session' style={{ textDecoration: 'none', color: 'inherit' }}>begin</a>
+            {/* <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link> */}
           </Button>
 
           <Button onClick={handleDisconnect}>

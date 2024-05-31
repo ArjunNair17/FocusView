@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, googleProvider } from '../config/firebase'
 import { createUserWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from 'firebase/auth'
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
 
 const Register = () => {
     const [email, setEmail] = useState("")
@@ -18,7 +26,7 @@ const Register = () => {
             try {
                 await createUserWithEmailAndPassword(auth, email, password)
                 setLoggedIn(true)
-                navigate('/')
+                navigate('/Login')
             } catch (err) {
                 console.log(err)
             }
@@ -55,8 +63,177 @@ const Register = () => {
         )
     } else  {
         return (
-            <div>
-                <div>Register</div>
+            <div className="App-header">
+                <Container component="main" >
+					<CssBaseline />
+					<Box
+						sx={{
+						marginTop: 8,
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						backgroundColor: 'rgba(255, 255, 255, 0.3)', // Black color with 50% opacity
+						padding: '40px',
+						borderRadius: '10px',
+						width: '500px',  // Set the width to 100%
+						height: '100%', // Set the height to 100%
+						// minWidth: '500px', // Minimum height for the box
+						}}
+					>
+					<Typography component="h1" variant="h4" sx={{ color: 'white', fontWeight: 'bold', alignSelf: 'flex-start' }}>
+                        Sign up
+                    </Typography>
+					<Box component="form" onSubmit={handleFormSubmit} noValidate sx={{ mt: 1 }}>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							id="email-address"
+							label="email address"
+							name="email"
+                            type="email"
+							autoComplete="email"
+							onChange={(e) => setEmail(e.target.value)}
+							autoFocus
+							sx={{ 
+								'& .MuiOutlinedInput-root': {
+									borderRadius: '40px',
+									'& fieldset': {
+									borderColor: 'white',
+									borderWidth: '2px',
+									},
+									'&:hover fieldset': {
+									borderColor: 'white',
+									},
+									'&.Mui-focused fieldset': {
+									borderColor: 'white',
+									},
+									'& .MuiOutlinedInput-input': {
+									color: 'white',
+									},
+								},
+								'& .MuiInputLabel-root': {
+									color: 'white',
+								},
+								'& .MuiInputLabel-root.Mui-focused': {
+									color: 'white',
+								}, 
+							}}
+						/>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							name="password"
+							label="password"
+							type="password"
+							id="password"
+							autoComplete="current-password"
+							onChange={(e) => setPassword(e.target.value)}
+							sx={{ 
+								'& .MuiOutlinedInput-root': {
+									borderRadius: '40px',
+									'& fieldset': {
+									borderColor: 'white',
+									borderWidth: '2px',
+									},
+									'&:hover fieldset': {
+									borderColor: 'white',
+									},
+									'&.Mui-focused fieldset': {
+									borderColor: 'white',
+									},
+									'& .MuiOutlinedInput-input': {
+									color: 'white',
+									},
+								},
+								'& .MuiInputLabel-root': {
+									color: 'white',
+								},
+								'& .MuiInputLabel-root.Mui-focused': {
+									color: 'white',
+								}, 
+							}}
+						/>
+                        <TextField
+							margin="normal"
+							required
+							fullWidth
+							name="confirmpassword"
+							label="confirm password"
+							type="password"
+							id="confirmpassword"
+							autoComplete="current-password"
+							onChange={(e) => setConfirmPassword(e.target.value)}
+							sx={{ 
+								'& .MuiOutlinedInput-root': {
+									borderRadius: '40px',
+									'& fieldset': {
+									borderColor: 'white',
+									borderWidth: '2px',
+									},
+									'&:hover fieldset': {
+									borderColor: 'white',
+									},
+									'&.Mui-focused fieldset': {
+									borderColor: 'white',
+									},
+									'& .MuiOutlinedInput-input': {
+									color: 'white',
+									},
+								},
+								'& .MuiInputLabel-root': {
+									color: 'white',
+								},
+								'& .MuiInputLabel-root.Mui-focused': {
+									color: 'white',
+								}, 
+							}}
+						/>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							sx={{ mt: 3, mb: 2, borderRadius: '40px', backgroundColor: 'black' }}
+						>
+							Sign up
+						</Button>
+						<Divider sx={{ borderColor: 'white' }}>
+						<Typography variant="body2" sx={{ fontSize: '15px' }}>or</Typography>
+						</Divider>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							sx={{ 
+								mt: 3, 
+								mb: 2, 
+								borderRadius: '40px', 
+								backgroundColor: 'transparent', 
+								textTransform: 'lowercase',
+								border: '2px solid white', // Added border property
+								color: 'white' // Ensure text color is white
+							}}
+							onClick={signInWithGoogle}
+						>
+							Sign up with Google
+						</Button>
+                        <Link
+                            href="./Login"
+                            variant="body2"
+                            sx={{
+                                display: 'block',
+                                color: 'white',
+                                textAlign: 'center',
+                                marginTop: 2 // Optional: Add some margin to the top if needed
+                            }}
+                            >
+                            {"Already have an account? Sign in"}
+                        </Link>
+						</Box>
+					</Box>
+					</Container>
+                {/* <div>Register</div>
                 <form className="form" onSubmit={handleFormSubmit}>
                     <div className="inputs">
                         <div>
@@ -114,7 +291,7 @@ const Register = () => {
                         <a href="/login">Already have an account? Login</a>
                         </div>
                     </div>
-                </form>
+                </form> */}
             </div>
         );
     }

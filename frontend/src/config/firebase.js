@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
+import { getDatabase } from "firebase/database";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 // import { getAnalytics } from "firebase/analytics";
 
@@ -21,7 +22,8 @@ const firebaseConfig = {
   storageBucket: "focusview-c3a33.appspot.com",
   messagingSenderId: "1069093234322",
   appId: "1:1069093234322:web:d2354ded27db1de9aca84b",
-  measurementId: "G-DP429NN7FS"
+  measurementId: "G-DP429NN7FS",
+  databaseURL: "https://focusview-c3a33-default-rtdb.firebaseio.com/"
 }
 
 const app = initializeApp(firebaseConfig);
@@ -29,7 +31,7 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
 
-const db = getFirestore(app);
+
 
 
 

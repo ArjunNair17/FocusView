@@ -10,6 +10,9 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import { useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import { EmailAuthCredential, getAuth, onAuthStateChanged } from "firebase/auth";
+
+import { getDatabase, ref, set, get, onValue, update, push } from "firebase/database";
 
 function Page2() {
   // State variables for each input field
@@ -19,6 +22,8 @@ function Page2() {
   const [isOpen, setIsOpen] = useState(false);
   const videoRef = useRef(null);
   const socketRef = useRef(null);
+  const [currentUser,setUser] = useState("");
+
 
   const closeModal = () => {
     setIsOpen(false);
@@ -62,6 +67,38 @@ function Page2() {
 
     socketRef.current.on('response', (data) => {
         console.log(data);
+    });
+
+    socketRef.current.on('custom', (data) => {
+      console.log("Disconnect Data " + data);
+      const user = data;
+      const db = getDatabase();
+      const userRef = ref(db, "users/" + currentUser)
+
+ 
+      get(userRef)
+            .then(snapshot => {
+                if (snapshot.exists()) {
+                    // User exists, update the existing user's information
+                    update(userRef, user)
+                        .then(() => {
+                            console.log("User information updated successfully");
+                        })
+                        .catch(error => {
+                            console.error("Error updating user information:", error);
+                        });
+                } else {
+                    // User doesn't exist, add a new user using push()
+                    const newUserRef = ref(db, 'users/' + currentUser);
+                    set(newUserRef, user)
+                        .then(() => {
+                            console.log("New user added successfully");
+                        })
+                        .catch(error => {
+                            console.error("Error adding new user:", error);
+                        });
+                }
+            })
     });
 
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -112,6 +149,45 @@ function Page2() {
   }, []);
 
 
+  useEffect(() => {
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/auth.user
+            const uid = user.uid;
+            const currentEmail = user.email;
+            console.log("userEmail " + currentEmail);
+            setUser(user.uid);
+            // ...
+        } else {
+            console.log("signed out");
+            // User is signed out
+            // ...
+      }
+    });
+    
+  }, []);
+
+
+
+  function handleDisconnect() {
+
+
+    if(socketRef.current) {
+      socketRef.current.emit("handleDisc");
+    }
+
+
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+
+  }
+
+
 
   return (
     <div className="App">
@@ -139,7 +215,7 @@ function Page2() {
       >
         <div style={{ marginTop: '10px' }}>Recalibrating...</div>
         <div style={{ marginTop: '30px' }}>
-           <video ref={videoRef} width="640" height="480" autoPlay />
+          {/* <video ref={videoRef} width="640" height="480" autoPlay /> */}
         </div>
         <div style={{ marginTop: '42px' }}>
         <Button variant="contained" color="primary" onClick={closeModal}>
@@ -187,6 +263,10 @@ function Page2() {
           
           <Button variant="contained" color="inherit" onClick={handleSubmit}>
             <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
+          </Button>
+
+          <Button onClick={handleDisconnect}>
+            Disconnect
           </Button>
         </div>
 

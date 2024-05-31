@@ -16,18 +16,17 @@ import { useNavigate } from 'react-router-dom'
 import { auth, googleProvider } from '../config/firebase'
 import { signInWithEmailAndPassword, signInWithPopup, onAuthStateChanged } from 'firebase/auth'
 
-
 function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                FocusView
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
+	return (
+		<Typography variant="body2" color="text.secondary" align="center" {...props}>
+			{'Copyright © '}
+			<Link color="inherit" href="https://mui.com/">
+				FocusView
+			</Link>{' '}
+			{new Date().getFullYear()}
+			{'.'}
+		</Typography>
+	);
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -39,36 +38,36 @@ const signUpBoxStyle = {
 };
 
 const horizontalLine = {
-    display: 'block',
-    width: '100%',
-    height: '1px',
+	display: 'block',
+	width: '100%',
+	height: '1px',
 }
 
 export default function Login() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [loggedIn, setLoggedIn] = useState(false)
+	const [email, setEmail] = useState("")
+	const [password, setPassword] = useState("")
+	const [loggedIn, setLoggedIn] = useState(false)
 
-    const navigate = useNavigate();
-    async function handleFormSubmit(e) {
-        e.preventDefault()
-        try {
-            await signInWithEmailAndPassword(auth, email, password)
-            setLoggedIn(true)
-            navigate('/')
-        } catch (err) {
-            console.log(err)
-        }
-    }
+	const navigate = useNavigate();
+	async function handleFormSubmit(e) {
+		e.preventDefault()
+		try {
+			await signInWithEmailAndPassword(auth, email, password)
+			setLoggedIn(true)
+			navigate('/')
+		} catch (err) {
+			console.log(err)
+		}
+	}
 
-    const signInWithGoogle = async () => {
-        try {
-            await signInWithPopup(auth, googleProvider)
-            setLoggedIn(true)
-        } catch (error) {
-            console.error(error)
-        }
-    }
+	const signInWithGoogle = async () => {
+		try {
+			await signInWithPopup(auth, googleProvider)
+			setLoggedIn(true)
+		} catch (error) {
+			console.error(error)
+		}
+	}
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -227,4 +226,3 @@ export default function Login() {
             </ThemeProvider>
         );
     }
-}

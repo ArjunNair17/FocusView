@@ -47,7 +47,7 @@ CircularProgressWithLabel.propTypes = {
 };
 
 // Your Page3 component
-function Page3() {
+function Session() {
   const [progress, setProgress] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
 
@@ -132,4 +132,4 @@ function Page3() {
   );
 }
 
-export { Page3, CircularProgressWithLabel };
+export { Session, CircularProgressWithLabel };

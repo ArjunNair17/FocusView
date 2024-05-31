@@ -3,21 +3,21 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import  Login from './components/Login';
 import Header from './components/Header';
 import Register from './components/Register';
-import Page1 from './components/page_1'; 
-import Page2 from './components/page_2'; 
-import { Page3 } from './components/page_3';
-import Page4 from './components/page_4';
+import BeginSession from './components/BeginSession'; 
+import Calibration from './components/Calibration'; 
+import { Session } from './components/Session';
+import SessionSummary from './components/SessionSummary';
 
 function App() {
    return (
 			<Router>
 				<Header />
 				<Routes>
-					<Route path="/" element={<Page1 />} /> {/* Default route */}
-					<Route path="/page_1" element={<Page1 />} />
-					<Route path="/page_2" element={<Page2 />} />
-					<Route path="/page_3" element={<Page3 />} />
-					<Route path="/page_4" element={<Page4 />} />
+					<Route path="/" element={<BeginSession />} /> {/* Default route */}
+					<Route path="/begin_session" element={<BeginSession />} />
+					<Route path="/calibration" element={<Calibration />} />
+					<Route path="/session" element={<Session />} />
+					<Route path="/session_summary" element={<SessionSummary />} />
 					<Route exact path="/login" element={<Login />} />
 					<Route exact path="/register" element={<Register />} />
 				</Routes>

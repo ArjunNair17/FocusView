@@ -11,7 +11,7 @@ import 'reactjs-popup/dist/index.css';
 import { useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
-function Page2() {
+function Calibration() {
   // State variables for each input field
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
@@ -47,6 +47,7 @@ function Page2() {
     window.minutes = minutes;
     window.seconds = seconds;
     console.log("Hours, minutes, seconds", window.hours, window.minutes, window.seconds); // Debugging
+    
   };
 
   const videoConstraints = {
@@ -74,28 +75,29 @@ function Page2() {
         mediaRecorder.ondataavailable = async (event) => {
           if (event.data.size > 0) {
             const blob = event.data;
-            const arrayBuffer = await blob.arrayBuffer();
-            const buffer = new Uint8Array(arrayBuffer);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const videoElement = videoRef.current;
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            // const arrayBuffer = await blob.arrayBuffer();
+            // const buffer = new Uint8Array(arrayBuffer);
+            // const canvas = document.createElement('canvas');
+            // const ctx = canvas.getContext('2d');
+            // const videoElement = videoRef.current;
+            // canvas.width = videoElement.videoWidth;
+            // canvas.height = videoElement.videoHeight;
+            // ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-            canvas.toBlob((blob) => {
-              const reader = new FileReader();
-              reader.onload = () => {
-                const buffer = new Uint8Array(reader.result);
-                socketRef.current.emit('videoData', buffer);
-              };
-              reader.readAsArrayBuffer(blob);
-            }, 'image/jpeg');
+            // canvas.toBlob((blob) => {
+            //   const reader = new FileReader();
+            //   reader.onload = () => {
+            //     const buffer = new Uint8Array(reader.result);
+            //     socketRef.current.emit('videoData', buffer);
+            //   };
+            //   reader.readAsArrayBuffer(blob);
+            // }, 'image/jpeg');
           }
         };
 
         mediaRecorder.start(100);
       })
+
       .catch(error => {
         console.error('Error accessing webcam:', error);
       });
@@ -110,6 +112,8 @@ function Page2() {
       }
     };
   }, []);
+  
+  
 
 
 
@@ -120,7 +124,7 @@ function Page2() {
       <header className="App-header">
         <div style={{ marginTop: '20px' }}>
              <video ref={videoRef} width="640" height="480" autoPlay />
-          </div>
+        </div>
           <button onClick={openModal}>Trigger</button>
       <Popup
         open={isOpen}
@@ -182,11 +186,11 @@ function Page2() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
           <Button variant="contained" color="inherit">
-            <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link>
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link>
           </Button>
           
           <Button variant="contained" color="inherit" onClick={handleSubmit}>
-            <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
+            <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
           </Button>
         </div>
 
@@ -196,4 +200,4 @@ function Page2() {
   );
 }
 
-export default Page2;
+export default Calibration;

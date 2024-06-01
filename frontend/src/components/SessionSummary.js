@@ -11,9 +11,8 @@ import { getDatabase, ref, set, get, onValue, update, push } from "firebase/data
 function SessionSummary() {
   const [isFlipped1, setIsFlipped1] = useState(false);
   const [isFlipped2, setIsFlipped2] = useState(false);
-  const socketRef = useRef(null);
-  const [currentUser,setUser] = useState("");
-  
+  // const [currentUser,setUser] = useState("");
+
   const handleClick1 = (e) => {
     e.preventDefault();
     setIsFlipped1(!isFlipped1);
@@ -33,30 +32,26 @@ function SessionSummary() {
     },
   });
 
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      const currentUser = user.uid;
 
-  useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/auth.user
-            const uid = user.uid;
-            setUser(user.uid);
-        } else {
-            console.log("signed out");
-      }
-    });
-    const db = getDatabase();
-    const userRef = ref(db, "users/" + currentUser);
-    console.log(currentUser);
-    console.log("USER REF" + userRef);
-    get(userRef)
-            .then(snapshot => {
-                if (snapshot.exists()) {
-                  console.log(snapshot.val());
-                } 
-            });
-  }, []);
+      const db = getDatabase();
+      const userRef = ref(db, "users/" + currentUser);
+
+      get(userRef)
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+          }
+        });
+    } else {
+      console.log("signed out");
+    }
+  });
 
 
   return (

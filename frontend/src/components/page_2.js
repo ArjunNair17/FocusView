@@ -68,14 +68,37 @@ function Page2() {
     socketRef.current.on('response', (data) => {
         console.log(data);
     });
+    var userName = "";
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/auth.user
+            const uid = user.uid;
+            userName = user.uid;
+            const currentEmail = user.email;
+            console.log(user.uid);
+            console.log(userName);
+            console.log("userEmail " + currentEmail);
+            setUser(user.uid);
+            // ...
+        } else {
+            console.log("signed out");
+            // User is signed out
+            // ...
+      }
+    });
+
+
+    const curUserName = userName;
+    console.log("curUserName " + curUserName);
 
     socketRef.current.on('custom', (data) => {
       console.log("Disconnect Data " + data);
       const user = data;
       const db = getDatabase();
-      const userRef = ref(db, "users/" + currentUser)
+      const userRef = ref(db, "users/" + userName)
 
- 
       get(userRef)
             .then(snapshot => {
                 if (snapshot.exists()) {
@@ -89,7 +112,7 @@ function Page2() {
                         });
                 } else {
                     // User doesn't exist, add a new user using push()
-                    const newUserRef = ref(db, 'users/' + currentUser);
+                    const newUserRef = ref(db, 'users/' + userName);
                     set(newUserRef, user)
                         .then(() => {
                             console.log("New user added successfully");
@@ -149,26 +172,6 @@ function Page2() {
   }, []);
 
 
-  useEffect(() => {
-
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/auth.user
-            const uid = user.uid;
-            const currentEmail = user.email;
-            console.log("userEmail " + currentEmail);
-            setUser(user.uid);
-            // ...
-        } else {
-            console.log("signed out");
-            // User is signed out
-            // ...
-      }
-    });
-    
-  }, []);
 
 
 

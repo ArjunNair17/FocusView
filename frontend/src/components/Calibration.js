@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import Checkbox from '@mui/material/Checkbox';
@@ -7,12 +6,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField'; // Import TextField from Material-UI
 // import Webcam from "react-webcam";
 import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
-import { useEffect, useRef } from 'react';
-import io from 'socket.io-client';
-import { EmailAuthCredential, getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useRef, useState } from 'react';
 
-import { getDatabase, ref, set, get, onValue, update, push } from "firebase/database";
+import 'reactjs-popup/dist/index.css';
 
 function Calibration() {
   // State variables for each input field
@@ -22,7 +18,7 @@ function Calibration() {
   const [isOpen, setIsOpen] = useState(false);
   const videoRef = useRef(null);
   const socketRef = useRef(null);
-  const [currentUser,setUser] = useState("");
+
 
 
   const closeModal = () => {
@@ -31,6 +27,12 @@ function Calibration() {
 
   const openModal = () => {
     setIsOpen(true);
+  };
+
+  const cleanupVideoStream = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    }
   };
 
   // Function to handle changes in each input field
@@ -48,6 +50,7 @@ function Calibration() {
 
   // Function to handle submit button click
   const handleSubmit = () => {
+    cleanupVideoStream();
     localStorage.setItem('hours', hours)
     localStorage.setItem('minutes', minutes)
     localStorage.setItem('seconds', seconds)
@@ -65,131 +68,26 @@ function Calibration() {
   };
 
   useEffect(() => {
-    socketRef.current = io('http://127.0.0.1:5000', {
-      transports: ['websocket'],
-    });
-
-    socketRef.current.on('response', (data) => {
-        console.log(data);
-    });
-    var userName = "";
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/auth.user
-            const uid = user.uid;
-            userName = user.uid;
-            const currentEmail = user.email;
-            console.log(user.uid);
-            console.log(userName);
-            console.log("userEmail " + currentEmail);
-            setUser(user.uid);
-            // ...
-        } else {
-            console.log("signed out");
-            // User is signed out
-            // ...
-      }
-    });
-
-
-    const curUserName = userName;
-    console.log("curUserName " + curUserName);
-
-    socketRef.current.on('custom', (data) => {
-      console.log("Disconnect Data " + data);
-      const user = data;
-      const db = getDatabase();
-      const userRef = ref(db, "users/" + userName)
-
-      get(userRef)
-            .then(snapshot => {
-                if (snapshot.exists()) {
-                    // User exists, update the existing user's information
-                    update(userRef, user)
-                        .then(() => {
-                            console.log("User information updated successfully");
-                        })
-                        .catch(error => {
-                            console.error("Error updating user information:", error);
-                        });
-                } else {
-                    // User doesn't exist, add a new user using push()
-                    const newUserRef = ref(db, 'users/' + userName);
-                    set(newUserRef, user)
-                        .then(() => {
-                            console.log("New user added successfully");
-                        })
-                        .catch(error => {
-                            console.error("Error adding new user:", error);
-                        });
-                }
-            })
-    });
-
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
-
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
-
-        mediaRecorder.ondataavailable = async (event) => {
-          if (event.data.size > 0) {
-            const blob = event.data;
-            const arrayBuffer = await blob.arrayBuffer();
-            const buffer = new Uint8Array(arrayBuffer);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const videoElement = videoRef.current;
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-            canvas.toBlob((blob) => {
-              const reader = new FileReader();
-              reader.onload = () => {
-                const buffer = new Uint8Array(reader.result);
-                socketRef.current.emit('videoData', buffer);
-              };
-              reader.readAsArrayBuffer(blob);
-            }, 'image/jpeg');
-          }
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play();
         };
-
-        mediaRecorder.start(100);
       })
-
       .catch(error => {
         console.error('Error accessing webcam:', error);
       });
 
+  
     return () => {
-      // Clean up
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-      if (videoRef.current && videoRef.current.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-      }
+        cleanupVideoStream();
     };
-  }, []);
-  
-  
-
-
-
-
-
-  function handleDisconnect() {
-    if(socketRef.current) {
-      socketRef.current.emit("handleDisc");
     }
-    if (videoRef.current && videoRef.current.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-    }
-  }
+  , []);
+  
+
+ 
 
 
 
@@ -271,9 +169,9 @@ function Calibration() {
             {/* <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link> */}
           </Button>
 
-          <Button onClick={handleDisconnect}>
-            Disconnect
-          </Button>
+            {/* <Button onClick={handleDisconnect}>
+              Disconnect
+            </Button> */}
         </div>
 
         

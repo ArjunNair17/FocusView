@@ -12,7 +12,6 @@ import cv2
 import base64
 
 
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 import cv2
 import time
 import math as m
@@ -53,6 +52,7 @@ def handle_disconnect():
 
 @socketio.on('videoData')
 def handle_video(data):
+    text = "Good Posture"
     if(clients.get(request.sid) != None):
         
         currentClient = clients[request.sid]
@@ -61,7 +61,6 @@ def handle_video(data):
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if frame is not None:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             currentPosture = doOneFrame(frame)
             
             if(currentPosture):
@@ -73,8 +72,10 @@ def handle_video(data):
                 
             
             if(currentClient.postureBadForLongTime()):
-                emit('response', "fix bad posture", room=request.sid)
+                text = "Bad Posture"
+               
                 
+            emit('response', text, room=request.sid)
             currentClient.increaseTick()
             
             

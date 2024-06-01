@@ -267,6 +267,7 @@ function Calibration() {
           </Button>
           
           <Button variant="contained" color="inherit" onClick={handleSubmit}>
+            
             <a href='/session' style={{ textDecoration: 'none', color: 'inherit' }}>begin</a>
             {/* <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link> */}
           </Button>

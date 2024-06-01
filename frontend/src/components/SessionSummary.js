@@ -11,7 +11,6 @@ import { getDatabase, ref, set, get, onValue, update, push } from "firebase/data
 function SessionSummary() {
   const [isFlipped1, setIsFlipped1] = useState(false);
   const [isFlipped2, setIsFlipped2] = useState(false);
-  // const [currentUser,setUser] = useState("");
 
   const handleClick1 = (e) => {
     e.preventDefault();
@@ -101,8 +100,8 @@ function SessionSummary() {
                     Posture
                   </Typography>
                   <LineChart
-                    xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-                    series={[{ data: [2, 5.5, 2, 8.5, 1.5, 5] }]}
+                    xAxis={[{ data: [1, 2, 3, 4, 5] }]}
+                    series={[{ data: [2, 5.5, 2, 8.5, 1.5] }]}
                     width={370}
                     height={300}
                   />

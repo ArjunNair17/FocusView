@@ -7,6 +7,7 @@ import BeginSession from './components/BeginSession';
 import Calibration from './components/Calibration'; 
 import { Session } from './components/Session';
 import SessionSummary from './components/SessionSummary';
+import UserStats from './components/UserStats';
 
 function App() {
    return (
@@ -18,8 +19,9 @@ function App() {
 					<Route path="/calibration" element={<Calibration />} />
 					<Route path="/session" element={<Session />} />
 					<Route path="/session_summary" element={<SessionSummary />} />
-					<Route exact path="/login" element={<Login />} />
-					<Route exact path="/register" element={<Register />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/register" element={<Register />} />
+					<Route path='/userstats' element={<UserStats />} />
 				</Routes>
 			</Router>
 	);

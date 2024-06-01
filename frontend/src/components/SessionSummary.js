@@ -4,7 +4,7 @@ import { Gauge } from '@mui/x-charts/Gauge';
 import { LineChart } from '@mui/x-charts/LineChart';
 import ReactCardFlip from 'react-card-flip';
 
-function Page4() {
+function SessionSummary() {
   const [isFlipped1, setIsFlipped1] = useState(false);
   const [isFlipped2, setIsFlipped2] = useState(false);
 
@@ -138,4 +138,4 @@ function Page4() {
   );
 }
 
-export default Page4;
+export default SessionSummary;

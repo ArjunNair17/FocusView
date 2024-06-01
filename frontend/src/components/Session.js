@@ -47,17 +47,19 @@ CircularProgressWithLabel.propTypes = {
 };
 
 // Your Page3 component
-function Page3() {
+function Session() {
   const [progress, setProgress] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
 
   // Calculate total duration whenever hours, minutes, or seconds change
   const totalDuration = React.useMemo(() => {
-    const hours = parseInt(window.hours) || 0;
-    const minutes = parseInt(window.minutes) || 0;
-    const seconds = parseInt(window.seconds) || 0;
+    const hours = parseInt(localStorage.getItem('hours')) || 0;
+    const minutes = parseInt(localStorage.getItem('minutes')) || 0;
+    const seconds = parseInt(localStorage.getItem('seconds')) || 0;
     return (seconds * 1000) + (minutes * 60 * 1000) + (hours * 60 * 60 * 1000);
-  }, [window.hours, window.minutes, window.seconds]);
+  }, [] );
+
+  // [window.hours, window.minutes, window.seconds]
 
   console.log("duration", totalDuration); // Debugging
 
@@ -132,4 +134,4 @@ function Page3() {
   );
 }
 
-export { Page3, CircularProgressWithLabel };
+export { Session, CircularProgressWithLabel };

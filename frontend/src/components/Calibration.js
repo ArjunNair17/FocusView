@@ -14,7 +14,7 @@ import { EmailAuthCredential, getAuth, onAuthStateChanged } from "firebase/auth"
 
 import { getDatabase, ref, set, get, onValue, update, push } from "firebase/database";
 
-function Page2() {
+function Calibration() {
   // State variables for each input field
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
@@ -48,10 +48,14 @@ function Page2() {
 
   // Function to handle submit button click
   const handleSubmit = () => {
-    window.hours = hours;
-    window.minutes = minutes;
-    window.seconds = seconds;
-    console.log("Hours, minutes, seconds", window.hours, window.minutes, window.seconds); // Debugging
+    localStorage.setItem('hours', hours)
+    localStorage.setItem('minutes', minutes)
+    localStorage.setItem('seconds', seconds)
+    // window.hours = hours;
+    // window.minutes = minutes;
+    // window.seconds = seconds;
+    // console.log("Hours, minutes, seconds", window.hours, window.minutes, window.seconds); // Debugging
+    // handleDisconnect();
   };
 
   const videoConstraints = {
@@ -156,6 +160,7 @@ function Page2() {
 
         mediaRecorder.start(100);
       })
+
       .catch(error => {
         console.error('Error accessing webcam:', error);
       });
@@ -170,24 +175,20 @@ function Page2() {
       }
     };
   }, []);
+  
+  
 
 
 
 
 
   function handleDisconnect() {
-
-
     if(socketRef.current) {
       socketRef.current.emit("handleDisc");
     }
-
-
     if (videoRef.current && videoRef.current.srcObject) {
       videoRef.current.srcObject.getTracks().forEach(track => track.stop());
     }
-
-
   }
 
 
@@ -199,7 +200,7 @@ function Page2() {
       <header className="App-header">
         <div style={{ marginTop: '20px' }}>
              <video ref={videoRef} width="640" height="480" autoPlay />
-          </div>
+        </div>
           <button onClick={openModal}>Trigger</button>
       <Popup
         open={isOpen}
@@ -261,11 +262,13 @@ function Page2() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
           <Button variant="contained" color="inherit">
-            <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link>
+            <a href='/' style={{ textDecoration: 'none', color: 'inherit' }}>cancel</a>
+            {/* <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link> */}
           </Button>
           
           <Button variant="contained" color="inherit" onClick={handleSubmit}>
-            <Link to="/page_3" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link>
+            <a href='/session' style={{ textDecoration: 'none', color: 'inherit' }}>begin</a>
+            {/* <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link> */}
           </Button>
 
           <Button onClick={handleDisconnect}>
@@ -279,4 +282,4 @@ function Page2() {
   );
 }
 
-export default Page2;
+export default Calibration;

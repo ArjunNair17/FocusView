@@ -43,7 +43,7 @@ function CircularProgressWithLabel(props) {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="header" component="div" style={{ color: '#FFF'}}>
+        <Typography variant="header" component="div" style={{ color: '#FFF' }}>
           {"Study " + `${Math.round(props.value)}%`}
         </Typography>
       </Box>
@@ -62,22 +62,24 @@ function Session() {
   const [progress, setProgress] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
   const [posture, setPosture] = useState("Good Posture");
+  const [attention, setAttention] = useState("Looking At Screen");
+
 
   const videoRef = useRef(null);
   const socketRef = useRef(null);
-  const [currentUser,setUser] = useState("");
+  const [currentUser, setUser] = useState("");
 
-  const handleDisconnect = (() =>{
-    if(socketRef.current) {
+  const handleDisconnect = (() => {
+    if (socketRef.current) {
       socketRef.current.emit("handleDisc");
     }
     if (videoRef.current && videoRef.current.srcObject) {
       videoRef.current.srcObject.getTracks().forEach(track => track.stop());
     }
 
-  }); 
-    
-  
+  });
+
+
 
   // Calculate total duration whenever hours, minutes, or seconds change
   const totalDuration = React.useMemo(() => {
@@ -85,7 +87,7 @@ function Session() {
     const minutes = parseInt(localStorage.getItem('minutes')) || 0;
     const seconds = parseInt(localStorage.getItem('seconds')) || 0;
     return (seconds * 1000) + (minutes * 60 * 1000) + (hours * 60 * 60 * 1000);
-  }, [] );
+  }, []);
 
   // [window.hours, window.minutes, window.seconds]
 
@@ -98,122 +100,148 @@ function Session() {
     socketRef.current = io('http://127.0.0.1:5000', {
       transports: ['websocket'],
     });
-  
-    socketRef.current.on('response', (data) => {
-       setPosture(data);
+
+    socketRef.current.on('response_posture', (data) => {
+      setPosture(data);
+    });
+
+    socketRef.current.on('response_gaze', (data) => {
+      setAttention(data);
     });
     var userName = "";
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/auth.user
-            const uid = user.uid;
-            userName = user.uid;
-            const currentEmail = user.email;
-            console.log(user.uid);
-            console.log(userName);
-            console.log("userEmail " + currentEmail);
-            setUser(user.uid);
-            // ...
-        } else {
-            console.log("signed out");
-            // User is signed out
-            // ...
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const uid = user.uid;
+        userName = user.uid;
+        const currentEmail = user.email;
+        console.log(user.uid);
+        console.log(userName);
+        console.log("userEmail " + currentEmail);
+        setUser(user.uid);
+
+        const curUserName = userName;
+        console.log("curUserName " + curUserName);
+
+        socketRef.current.on('custom', (data) => {
+          console.log("Disconnect Data " + data);
+          const user = data;
+          const db = getDatabase();
+          const userRef = ref(db, "users/" + uid)
+
+
+          get(userRef)
+            .then(snapshot => {
+              if (snapshot.exists()) {
+                const curUser = snapshot.val().past_5_gaze;
+                const currentGaze = snapshot.val().past_5_posture;
+                console.log(snapshot.val());
+
+                console.log(user.percent_good_gaze);
+
+                if (curUser.length > 5) {
+                  curUser.shift()
+                  curUser.push(user.percent_good_posture)
+                }
+
+                else {
+                  curUser.push(user.percent_good_posture);
+                }
+
+                if (currentGaze.length > 5) {
+                  currentGaze.shift()
+                  currentGaze.push(user.percent_good_gaze)
+                }
+
+                else {
+                  currentGaze.push(user.percent_good_gaze);
+                }
+
+                console.log(curUser)
+                console.log(currentGaze)
+                user.past_5_gaze = curUser;
+                user.past_5_posture = currentGaze;
+                // User exists, update the existing user's information
+                update(userRef, user)
+                  .then(() => {
+                    console.log("User information updated successfully");
+                  })
+                  .catch(error => {
+                    console.error("Error updating user information:", error);
+                  });
+              } else {
+                // User doesn't exist, add a new user using push()
+                const newUserRef = ref(db, 'users/' + uid);
+                const percentPosture = user.percent_good_posture;
+                const percentGaze = user.percent_good_gaze;
+                user.past_5_gaze = []
+                user.past_5_posture = []
+
+                user.past_5_gaze.push(percentGaze)
+                user.past_5_posture.push(percentPosture)
+
+                set(newUserRef, user)
+                  .then(() => {
+                    console.log("New user added successfully");
+                  })
+                  .catch(error => {
+                    console.error("Error adding new user:", error);
+                  });
+              }
+            })
+        });
+
+        // ...
+      } else {
+        console.log("signed out");
+        // User is signed out
+        // ...
       }
     });
-  
-  
-    const curUserName = userName;
-    console.log("curUserName " + curUserName);
-  
-    socketRef.current.on('custom', (data) => {
-      console.log("Disconnect Data " + data);
-      const user = data;
-      const db = getDatabase();
-      const userRef = ref(db, "users/" + userName)
-  
-  
-      get(userRef)
-            .then(snapshot => {
-                if (snapshot.exists()) {
-                    const curUser = snapshot.val().percent_good_posture;
-                    console.log(snapshot.val());
-  
-                    console.log(curUser);
-                    
-                    if(curUser.length > 5) {
-                        curUser.shift()
-                        curUser.push(user.percent_good_posture)
-                    }
-  
-                    else {
-                      curUser.push(user.percent_good_posture);
-                    }
-                    
-                    console.log(curUser)
-                    user.percent_good_posture = curUser;
-                    
-                    // User exists, update the existing user's information
-                    update(userRef, user)
-                        .then(() => {
-                            console.log("User information updated successfully");
-                        })
-                        .catch(error => {
-                            console.error("Error updating user information:", error);
-                        });
-                } else {
-                    // User doesn't exist, add a new user using push()
-                    const newUserRef = ref(db, 'users/' + userName);
-                    user.percent_good_posture = [user.percent_good_posture];
-                    set(newUserRef, user)
-                        .then(() => {
-                            console.log("New user added successfully");
-                        })
-                        .catch(error => {
-                            console.error("Error adding new user:", error);
-                        });
-                }
-            })
-    });
-  
+
+
+
     navigator.mediaDevices.getUserMedia({ video: true })
-    . then(stream => {
-      videoRef.current.srcObject = stream;
-      videoRef.current.onloadedmetadata = () => {
-        videoRef.current.play();
-      };
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
-  
-        mediaRecorder.ondataavailable = async (event) => {
-          if (event.data.size > 0) {
-            const blob = event.data;
-            const arrayBuffer = await blob.arrayBuffer();
-            const buffer = new Uint8Array(arrayBuffer);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const videoElement = videoRef.current;
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-  
-            canvas.toBlob((blob) => {
-              const reader = new FileReader();
-              reader.onload = () => {
-                const buffer = new Uint8Array(reader.result);
-                socketRef.current.emit('videoData', buffer);
-              };
-              reader.readAsArrayBuffer(blob);
-            }, 'image/jpeg');
-          }
+      .then(stream => {
+        videoRef.current.srcObject = stream;
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play();
         };
-        mediaRecorder.start(100);
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
+        if (videoRef.current !== null) {
+          mediaRecorder.ondataavailable = async (event) => {
+            if (event.data.size > 0) {
+              const blob = event.data;
+              const arrayBuffer = await blob.arrayBuffer();
+              const buffer = new Uint8Array(arrayBuffer);
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              const videoElement = videoRef.current;
+              canvas.width = videoElement.videoWidth;
+              canvas.height = videoElement.videoHeight;
+              ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+              canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const buffer = new Uint8Array(reader.result);
+                  socketRef.current.emit('videoData', buffer);
+                };
+                reader.readAsArrayBuffer(blob);
+              }, 'image/jpeg');
+            }
+          };
+          mediaRecorder.start(100);
+        }
+
       })
-  
-      // .catch(error => {
-      //   console.error('Error accessing webcam:', error);
-      // });
-  
+
+      .catch(error => {
+        console.error('Error accessing webcam:', error);
+      });
+
     return () => {
       // Clean up
       if (socketRef.current) {
@@ -224,8 +252,8 @@ function Session() {
       }
     };
   }, []);
-  
-  
+
+
 
 
   React.useEffect(() => {
@@ -261,27 +289,30 @@ function Session() {
   return (
     <div className="App">
       <header className="App-header">
-     
+
         <CircularProgressWithLabel value={progress} size={300} />
         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
           <IconButton>
-            <VideoCameraFrontIcon style={{ fontSize: 40 ,  color: '#FFFFFF'}} />
+            <VideoCameraFrontIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
           </IconButton>
           <IconButton onClick={handlePauseClick}>
             {isPaused ? (
-              <PlayCircleIcon style={{ fontSize: 40 ,color: '#FFFFFF'}} />
+              <PlayCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
             ) : (
-              <PauseCircleIcon style={{ fontSize: 40 ,color: '#FFFFFF'}} />
+              <PauseCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
             )}
           </IconButton>
           <IconButton onClick={handleClickOpen}>
-            <CancelIcon style={{ fontSize: 40 ,color: '#FFFFFF'}} />
+            <CancelIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
           </IconButton>
         </div>
         <div>
           {posture}
         </div>
 
+        <div>
+          {attention}
+        </div>
         <video ref={videoRef} style={{ display: 'none' }}></video>
         <Dialog
           open={open}
@@ -297,7 +328,7 @@ function Session() {
             <Button onClick={handleClose} autoFocus>
               Yes
             </Button>
-            
+
           </DialogActions>
         </Dialog>
       </header>

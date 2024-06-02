@@ -3,6 +3,7 @@ import eventlet
 eventlet.monkey_patch()
 
 from user import User
+from gaze import gazeDetect
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
@@ -52,7 +53,8 @@ def handle_disconnect():
 
 @socketio.on('videoData')
 def handle_video(data):
-    text = "Good Posture"
+    posture_text = "Good Posture"
+    gaze_text = "Looking At Screen"
     if(clients.get(request.sid) != None):
         
         currentClient = clients[request.sid]
@@ -62,20 +64,22 @@ def handle_video(data):
 
         if frame is not None:
             currentPosture = doOneFrame(frame)
+            currentGaze = gazeDetect(frame)
             
             if(currentPosture):
                 currentClient.increaseGoodTick()
-                currentClient.resetBadTicks()
                 
-            else:
-                currentClient.increaseBadTick()
+            if(currentPosture == False):
+                posture_text = "Bad Posture"
                 
+            if(currentGaze == True):
+                currentClient.increaseGoodGazeTick()
             
-            if(currentClient.postureBadForLongTime()):
-                text = "Bad Posture"
-               
+            if(currentGaze == False):
+                gaze_text = "Not Looking At Screen"
                 
-            emit('response', text, room=request.sid)
+            emit('response_posture', posture_text, room=request.sid)
+            emit('response_gaze', gaze_text, room = request.sid)
             currentClient.increaseTick()
             
             

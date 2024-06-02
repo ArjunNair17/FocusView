@@ -11,6 +11,11 @@ import { getDatabase, ref, set, get, onValue, update, push } from "firebase/data
 function SessionSummary() {
   const [isFlipped1, setIsFlipped1] = useState(false);
   const [isFlipped2, setIsFlipped2] = useState(false);
+  const [posture, setPosture] = useState(false);
+  const [gaze,setGaze] = useState(false);
+  const [postureTrend, setPostureTrend] = useState([]);
+  const [gazeTrend, setGazeTrend] = useState(false);
+  
 
   const handleClick1 = (e) => {
     e.preventDefault();
@@ -44,7 +49,15 @@ function SessionSummary() {
       get(userRef)
         .then(snapshot => {
           if (snapshot.exists()) {
-            console.log(snapshot.val());
+            const data = snapshot.val();
+            
+            setGaze(data.percent_good_gaze);
+            setGazeTrend(data.past_5_gaze);
+
+            setPosture(data.percent_good_posture);
+            setPostureTrend(data.past_5_posture);
+
+           
           }
         });
     } else {
@@ -52,6 +65,8 @@ function SessionSummary() {
     }
   });
 
+
+  
 
   return (
     <div className="App">
@@ -78,7 +93,7 @@ function SessionSummary() {
                   <Typography variant="h5" style={{ color: '#FFF', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                     Posture
                   </Typography>
-                  <Gauge width={200} height={200} value={10} color="#FFFFF" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                  <Gauge width={200} height={200} value={posture * 100} color="#FFFFF" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
                 </Box>
               </div>
 
@@ -127,7 +142,7 @@ function SessionSummary() {
                   <Typography variant="h5" style={{ color: '#FFF', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                     Eye Tracking
                   </Typography>
-                  <Gauge width={200} height={200} value={10} style={{ color: '#FFF', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                  <Gauge width={200} height={200} value={gaze * 100} style={{ color: '#FFF', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
                 </Box>
               </div>
 
@@ -149,8 +164,10 @@ function SessionSummary() {
                     Eye Tracking
                   </Typography>
                   <LineChart
-                    xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-                    series={[{ data: [2, 5.5, 2, 8.5, 1.5, 5] }]}
+                    xAxis={[{ data: [1, 2, 3, 4, 5] }]}
+                    series={[{ data: [2, 5.5, 2, 8.5, 1.5] }]}
+                    //xAxis={[{ data: xAxisData }]}
+                    //series={[{ data: postureTrend }]}
                     width={370}
                     height={300}
                   />

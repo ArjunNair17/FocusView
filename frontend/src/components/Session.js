@@ -16,6 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import * as Tone from 'tone';
 
 // Your CircularProgressWithLabel component
 import io from 'socket.io-client';
@@ -63,12 +64,14 @@ function Session() {
   const [isPaused, setIsPaused] = React.useState(false);
   const [posture, setPosture] = useState("Good Posture");
   const [attention, setAttention] = useState("Looking At Screen");
-
-
+  const [audioLevel, setAudioLevel] = useState("Good Noise Level");
+  const [totalTicks, setTotalTicks] = useState(0);
+  const [goodTicks, setGoodTicks] = useState(0);
   const videoRef = useRef(null);
   const socketRef = useRef(null);
   const [currentUser, setUser] = useState("");
 
+  
   const handleDisconnect = (() => {
     if (socketRef.current) {
       socketRef.current.emit("handleDisc");
@@ -97,6 +100,7 @@ function Session() {
   const increment = (granularity / totalDuration) * 100; // Calculate increment percentage
 
   useEffect(() => {
+    
     socketRef.current = io('http://127.0.0.1:5000', {
       transports: ['websocket'],
     });
@@ -130,18 +134,23 @@ function Session() {
           const user = data;
           const db = getDatabase();
           const userRef = ref(db, "users/" + uid)
+          var noisePercentage = goodTicks / totalTicks;
+          console.log(noisePercentage);
 
-
+          if(isNaN(noisePercentage)) {
+            noisePercentage = 1;
+          }
           get(userRef)
             .then(snapshot => {
               if (snapshot.exists()) {
                 const curUser = snapshot.val().past_5_gaze;
                 const currentGaze = snapshot.val().past_5_posture;
+                const currentNoise = snapshot.val().past_5_noise;
                 console.log(snapshot.val());
 
                 console.log(user.percent_good_gaze);
 
-                if (curUser.length > 5) {
+                if (curUser.length >= 5) {
                   curUser.shift()
                   curUser.push(user.percent_good_posture)
                 }
@@ -150,7 +159,7 @@ function Session() {
                   curUser.push(user.percent_good_posture);
                 }
 
-                if (currentGaze.length > 5) {
+                if (currentGaze.length >= 5) {
                   currentGaze.shift()
                   currentGaze.push(user.percent_good_gaze)
                 }
@@ -159,10 +168,20 @@ function Session() {
                   currentGaze.push(user.percent_good_gaze);
                 }
 
+                if (currentNoise.length >= 5) {
+                  currentNoise.shift()
+                  currentNoise.push(noisePercentage)
+                }
+
+                else {
+                  currentNoise.push(noisePercentage);
+                }
                 console.log(curUser)
                 console.log(currentGaze)
+                
                 user.past_5_gaze = curUser;
                 user.past_5_posture = currentGaze;
+                user.past_5_noise = currentNoise;
                 // User exists, update the existing user's information
                 update(userRef, user)
                   .then(() => {
@@ -178,6 +197,9 @@ function Session() {
                 const percentGaze = user.percent_good_gaze;
                 user.past_5_gaze = []
                 user.past_5_posture = []
+                user.past_5_noise = []
+
+                user.past_5_noise.push(noisePercentage)
 
                 user.past_5_gaze.push(percentGaze)
                 user.past_5_posture.push(percentPosture)
@@ -202,13 +224,38 @@ function Session() {
     });
 
 
+    const mic = new Tone.UserMedia();
+    const meter = new Tone.Meter();
+    meter.normalRange = false;
+    mic.open().then(() => {
+      mic.connect(meter)
+    })
 
-    navigator.mediaDevices.getUserMedia({ video: true })
+    const interval = setInterval(() => {
+      const level = meter.getValue();
+
+      if(level > -35) {
+        setAudioLevel("Too Loud")
+      }
+
+      else {
+        setAudioLevel("Good Noise Level")
+        setGoodTicks(goodTicks + 1)
+      }
+      console.log('Current decibel level:', level);
+      setTotalTicks(totalTicks + 1);
+
+      // Do something with the decibel level, such as updating state or UI
+    }, 250);
+
+
+    navigator.mediaDevices.getUserMedia({ video: true})
       .then(stream => {
         videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = () => {
           videoRef.current.play();
         };
+      
         const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
         if (videoRef.current !== null) {
           mediaRecorder.ondataavailable = async (event) => {
@@ -247,6 +294,10 @@ function Session() {
       if (socketRef.current) {
         socketRef.current.disconnect();
       }
+
+      mic.close();
+      clearInterval(interval);
+
       if (videoRef.current && videoRef.current.srcObject) {
         videoRef.current.srcObject.getTracks().forEach(track => track.stop());
       }
@@ -312,6 +363,10 @@ function Session() {
 
         <div>
           {attention}
+        </div>
+
+        <div>
+          {audioLevel}
         </div>
         <video ref={videoRef} style={{ display: 'none' }}></video>
         <Dialog

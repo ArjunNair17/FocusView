@@ -131,7 +131,22 @@ def doOneFrame(frame):
 
 
 
-        if ((float(currentLSN)/float(GoodPostureLSN) <= Dthreshold or float(currentRSN)/float(GoodPostureRSN) <= Dthreshold)  and  (float(currentNSAngle)/float(GoodNSAngle) <= Athreshold or float(currentLSNAngle)/float(GoodLSNAngle) <= Athreshold  or float(currentRSNAngle)/float(GoodRSNAngle) <= Athreshold)):
+        #checks if the distance between data points is within threshold
+        distanceProportion = float(currentLSN)/float(GoodPostureLSN) <= Dthreshold or float(currentRSN)/float(GoodPostureRSN) <= Dthreshold
+        #checks if the angle between datapoints is with threshold
+        angleProportion = float(currentNSAngle)/float(GoodNSAngle) <= Athreshold or float(currentLSNAngle)/float(GoodLSNAngle) <= Athreshold  or float(currentRSNAngle)/float(GoodRSNAngle) <= Athreshold
+        #checks if shoulders are aligned 
+        shoulderLevel = (lShoulderY/rShoulderY) <= 0.95 or (rShoulderY/lShoulderY) <= 0.95
+
+        #condition:
+            #if the distance is under proportion return true
+            #if the distance is under proportion but angle is under proportion return true
+            #if angle is not within proportion but the shoulderLevel is within proportion return True
+
+        
+        if ((distanceProportion)  and  (angleProportion)):
+            if (shoulderLevel):
+                True
             #returns false if they have bad posture
             return False
         else:

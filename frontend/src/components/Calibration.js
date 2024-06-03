@@ -11,7 +11,7 @@ import 'reactjs-popup/dist/index.css';
 import { useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import { EmailAuthCredential, getAuth, onAuthStateChanged } from "firebase/auth";
-
+import SoundDetector from './SoundProcessor';
 import { getDatabase, ref, set, get, onValue, update, push } from "firebase/database";
 
 function Calibration() {
@@ -23,6 +23,8 @@ function Calibration() {
   const videoRef = useRef(null);
   const socketRef = useRef(null);
   const [currentUser,setUser] = useState("");
+  const soundDetectorRef = useRef(null);
+
 
 
   const closeModal = () => {
@@ -68,6 +70,8 @@ function Calibration() {
     socketRef.current = io('http://127.0.0.1:5000', {
       transports: ['websocket'],
     });
+
+    soundDetectorRef.current.startAudioContext();
 
     socketRef.current.on('response', (data) => {
         console.log(data);
@@ -164,6 +168,9 @@ function Calibration() {
       .catch(error => {
         console.error('Error accessing webcam:', error);
       });
+
+
+      
 
     return () => {
       // Clean up

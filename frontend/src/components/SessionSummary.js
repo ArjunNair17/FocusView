@@ -14,7 +14,9 @@ function SessionSummary() {
   const [posture, setPosture] = useState(false);
   const [gaze,setGaze] = useState(false);
   const [postureTrend, setPostureTrend] = useState([]);
-  const [gazeTrend, setGazeTrend] = useState(false);
+  const [gazeTrend, setGazeTrend] = useState([]);
+  const [postureTrend_Xaxis, setPostureTrend_Xaxis] = useState([]);
+  const [gazeTrend_Xaxis, setGazeTrend_Xaxis] = useState([]);
   
 
   const handleClick1 = (e) => {
@@ -57,7 +59,22 @@ function SessionSummary() {
             setPosture(data.percent_good_posture);
             setPostureTrend(data.past_5_posture);
 
-           
+            const lenGaze = data.past_5_gaze.length;
+            const lenPosture  = data.past_5_posture.length;
+
+            const temp_gaze = [];
+            const temp_posture = [];
+            
+            for (let i = 0; i<lenGaze; i++){
+              temp_gaze[i] = i+1;
+            }
+
+            for (let j = 0; j<lenPosture; j++){
+              temp_posture[j] = j+1;
+            }
+            setPostureTrend_Xaxis(temp_posture);
+            setGazeTrend_Xaxis(temp_gaze);
+
           }
         });
     } else {
@@ -115,8 +132,8 @@ function SessionSummary() {
                     Posture
                   </Typography>
                   <LineChart
-                    xAxis={[{ data: [1, 2, 3, 4, 5] }]}
-                    series={[{ data: [2, 5.5, 2, 8.5, 1.5] }]}
+                    xAxis={[{ data: postureTrend_Xaxis }]}
+                    series={[{ data: postureTrend }]}
                     width={370}
                     height={300}
                   />
@@ -164,10 +181,8 @@ function SessionSummary() {
                     Eye Tracking
                   </Typography>
                   <LineChart
-                    xAxis={[{ data: [1, 2, 3, 4, 5] }]}
-                    series={[{ data: [2, 5.5, 2, 8.5, 1.5] }]}
-                    //xAxis={[{ data: xAxisData }]}
-                    //series={[{ data: postureTrend }]}
+                    xAxis={[{ data: gazeTrend_Xaxis }]}
+                    series={[{ data: gazeTrend }]}
                     width={370}
                     height={300}
                   />

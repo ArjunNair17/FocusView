@@ -47,6 +47,7 @@ export default function Login() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [loggedIn, setLoggedIn] = useState(false)
+	const [errorMessage, setErrorMessage] = useState("")
 
 	const navigate = useNavigate();
 	async function handleFormSubmit(e) {
@@ -55,8 +56,9 @@ export default function Login() {
 			await signInWithEmailAndPassword(auth, email, password)
 			setLoggedIn(true)
 			navigate('/')
-		} catch (err) {
-			console.log(err)
+		} catch (error) {
+			console.log(error)
+			setErrorMessage(error.message)
 		}
 	}
 
@@ -66,6 +68,7 @@ export default function Login() {
 			setLoggedIn(true)
 		} catch (error) {
 			console.error(error)
+			setErrorMessage(error.message)
 		}
 	}
 
@@ -179,6 +182,9 @@ export default function Login() {
                                 }, 
                             }}
                         />
+						<Typography sx={{ color: 'white', fontWeight: 'normal', alignSelf: 'flex-start' }}>
+							{ errorMessage }
+						</Typography>
                         <Button
                             type="submit"
                             fullWidth

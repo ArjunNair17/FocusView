@@ -16,6 +16,7 @@ const Register = () => {
     const [password, setPassword] = useState("")
     const [confirmpassword, setConfirmPassword] = useState("")
     const [loggedIn, setLoggedIn] = useState(false)
+	const [errorMessage, setErrorMessage] = useState("")
 
     const navigate = useNavigate();
 
@@ -29,9 +30,10 @@ const Register = () => {
                 navigate('/Login')
             } catch (err) {
                 console.log(err)
+				setErrorMessage(err.message)
             }
         } else {
-            console.log("Passwords do not match!")
+			setErrorMessage("Passwords do not match!")
         }
     }
 
@@ -41,6 +43,7 @@ const Register = () => {
             setLoggedIn(true)
         } catch (error) {
             console.error(error)
+			setErrorMessage(error.message)
         }
     }
 
@@ -190,6 +193,9 @@ const Register = () => {
 								}, 
 							}}
 						/>
+						<Typography sx={{ color: 'white', fontWeight: 'normal', alignSelf: 'flex-start'}}>
+							{ errorMessage }
+						</Typography>
 						<Button
 							type="submit"
 							fullWidth

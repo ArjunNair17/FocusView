@@ -4,9 +4,14 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 const UserStats = () => {
 
+    
     return (
-        <>
+        <> 
             stats
+
+            attention
+            eyetracking
+            noise
         </>
     );
 }

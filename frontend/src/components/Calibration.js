@@ -18,8 +18,6 @@ function Calibration() {
   const videoRef = useRef(null);
   const socketRef = useRef(null);
 
-
-
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -93,12 +91,11 @@ function Calibration() {
   return (
     <div className="App">
       {/* Render the WebcamCapture component */}
-     
       <header className="App-header">
         <div style={{ marginTop: '20px' }}>
-             <video ref={videoRef} width="640" height="480" autoPlay />
+          <div className='calibrationMessage'>Sit with good posture and look at the screen before pressing begin!</div>
+          <video ref={videoRef} width="640" height="480" autoPlay />
         </div>
-          <button onClick={openModal}>Trigger</button>
       <Popup
         open={isOpen}
         modal

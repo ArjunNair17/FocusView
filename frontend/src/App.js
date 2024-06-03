@@ -21,7 +21,7 @@ function App() {
 					<Route path="/session_summary" element={<SessionSummary />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/register" element={<Register />} />
-					<Route path='/userstats' element={<UserStats />} />
+					<Route path='/user' element={<UserStats />} />
 				</Routes>
 			</Router>
 	);

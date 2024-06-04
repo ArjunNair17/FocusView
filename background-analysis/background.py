@@ -8,20 +8,20 @@ from collections import deque
 video = cv2.VideoCapture('test2.mp4')
 reading, img = video.read()
 count = 0
-# while reading:    
-#   mask = np.zeros(img.shape[:2],np.uint8)
-#   bgdModel = np.zeros((1,65),np.float64)
-#   fgdModel = np.zeros((1,65),np.float64) 
-#   rect = (50,50,450,290)
-#   cv2.grabCut(img,mask,rect,bgdModel,fgdModel,5,cv2.GC_INIT_WITH_RECT)
-#   mask2 = np.where((mask==0)|(mask==2),0,1).astype('uint8') #0 and 2 pixels are background, 1 and 3 pixels are foreground
-#   img = img*mask2[:,:,np.newaxis]
-#   cv2.imwrite("test/frame%d.jpg" % count, img)
-#   print('Extracted frame: ', count)
+while reading:    
+  mask = np.zeros(img.shape[:2],np.uint8)
+  bgdModel = np.zeros((1,65),np.float64)
+  fgdModel = np.zeros((1,65),np.float64) 
+  rect = (50,50,450,290)
+  cv2.grabCut(img,mask,rect,bgdModel,fgdModel,5,cv2.GC_INIT_WITH_RECT)
+  mask2 = np.where((mask==0)|(mask==2),0,1).astype('uint8') #0 and 2 pixels are background, 1 and 3 pixels are foreground
+  img = img*mask2[:,:,np.newaxis]
+  cv2.imwrite("test/frame%d.jpg" % count, img)
+  print('Extracted frame: ', count)
 
-#   reading,img = video.read()
-#   # print('Read a new frame: ', reading)
-#   count += 1
+  reading,img = video.read()
+  # print('Read a new frame: ', reading)
+  count += 1
 
 #detect motion in the background frames
 count = 159

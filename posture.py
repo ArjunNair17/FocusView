@@ -146,7 +146,7 @@ def doOneFrame(frame):
         
         if ((distanceProportion)  and  (angleProportion)):
             if (shoulderLevel):
-                True
+                return True
             #returns false if they have bad posture
             return False
         else:

@@ -7,6 +7,10 @@ import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -100,6 +104,15 @@ function Session() {
   const increment = (granularity / totalDuration) * 100; // Calculate increment percentage
 
   useEffect(() => {
+
+
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission().then(permission => {
+        if (permission !== 'granted') {
+          alert('Permission to display notifications was denied');
+        }
+      });
+    }
     
     socketRef.current = io('http://127.0.0.1:5000', {
       transports: ['websocket'],
@@ -107,6 +120,20 @@ function Session() {
 
     socketRef.current.on('response_posture', (data) => {
       setPosture(data);
+      
+    });
+
+    socketRef.current.on('notify_posture', (data) => {
+      console.log("Got here1 bro")
+      const transparentIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/w8AAwAB/3+BqZcAAAAASUVORK5CYII=';
+
+      if (Notification.permission === 'granted') {
+        console.log("hellooooooo!")
+        new Notification('FocusView', {
+          body: data,
+          icon:transparentIcon
+        });
+      }
     });
 
     socketRef.current.on('response_gaze', (data) => {
@@ -128,6 +155,8 @@ function Session() {
 
         const curUserName = userName;
         console.log("curUserName " + curUserName);
+       
+
 
         socketRef.current.on('custom', (data) => {
           console.log("Disconnect Data " + data);
@@ -143,14 +172,14 @@ function Session() {
           get(userRef)
             .then(snapshot => {
               if (snapshot.exists()) {
-                const curUser = snapshot.val().past_5_gaze;
-                const currentGaze = snapshot.val().past_5_posture;
+                const curUser = snapshot.val().past_5_posture;
+                const currentGaze = snapshot.val().past_5_gaze;
                 const currentNoise = snapshot.val().past_5_noise;
                 console.log(snapshot.val());
 
                 console.log(user.percent_good_gaze);
 
-                if (curUser.length >= 5) {
+                if (curUser.length >= 20) {
                   curUser.shift()
                   curUser.push(user.percent_good_posture)
                 }
@@ -159,7 +188,7 @@ function Session() {
                   curUser.push(user.percent_good_posture);
                 }
 
-                if (currentGaze.length >= 5) {
+                if (currentGaze.length >= 20) {
                   currentGaze.shift()
                   currentGaze.push(user.percent_good_gaze)
                 }
@@ -168,7 +197,7 @@ function Session() {
                   currentGaze.push(user.percent_good_gaze);
                 }
 
-                if (currentNoise.length >= 5) {
+                if (currentNoise.length >= 20) {
                   currentNoise.shift()
                   currentNoise.push(noisePercentage)
                 }
@@ -179,8 +208,8 @@ function Session() {
                 console.log(curUser)
                 console.log(currentGaze)
                 
-                user.past_5_gaze = curUser;
-                user.past_5_posture = currentGaze;
+                user.past_5_gaze = currentGaze;
+                user.past_5_posture = curUser;
                 user.past_5_noise = currentNoise;
                 // User exists, update the existing user's information
                 update(userRef, user)
@@ -386,6 +415,7 @@ function Session() {
 
           </DialogActions>
         </Dialog>
+        <ToastContainer />
       </header>
     </div>
   );

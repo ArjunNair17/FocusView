@@ -58,6 +58,7 @@ def handle_video(data):
     if(clients.get(request.sid) != None):
         
         currentClient = clients[request.sid]
+        currentClient.increaseTimer()
         # Decode the incoming video data
         nparr = np.frombuffer(data, np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -70,6 +71,7 @@ def handle_video(data):
                 currentClient.increaseGoodTick()
                 
             if(currentPosture == False):
+                currentClient.increaseBadPostureTick()
                 posture_text = "Bad Posture"
                 
             if(currentGaze == True):
@@ -78,11 +80,23 @@ def handle_video(data):
             if(currentGaze == False):
                 gaze_text = "Not Looking At Screen"
                 
-            emit('response_posture', posture_text, room=request.sid)
-            emit('response_gaze', gaze_text, room = request.sid)
+        
+                
+            print(currentGaze)
+            print(currentPosture)
+            print(currentClient.timer_())
             currentClient.increaseTick()
             
             
+            if(currentClient.checkTimer()):
+                emit('response_posture', posture_text, room=request.sid)
+                emit('response_gaze', gaze_text, room = request.sid)
+                currentClient.resetTimer()
+                
+            if(currentClient.postureBadForLongTime()):
+                emit('notify_posture', "You've Had Bad Posture For A While!", room=request.sid)
+                currentClient.resetBadTicks()
+               
             print(currentClient.good_ticks/currentClient.total_ticks);
                 
             # faces = face_cascade.detectMultiScale(gray, 1.2, 4)

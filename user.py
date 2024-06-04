@@ -6,6 +6,7 @@ class User:
         self.good_gazeTicks = 0;
         self.bad_gazeTicks = 0;
         self.total_gazeTicks = 0;
+        self.timer = 0
         
     def to_dict(self):
         return {
@@ -16,7 +17,18 @@ class User:
             'percent_good_gaze': self.good_gazeTicks / self.total_gazeTicks
             
         }
+        
+    def timer_(self):
+        return self.timer
 
+    def increaseTimer(self):
+        self.timer += 1
+
+    def resetTimer(self):
+        self.timer = 0
+        
+    def checkTimer(self):
+        return self.timer == 25
         
     def increaseGoodTick(self):
         self.good_ticks += 1
@@ -38,4 +50,4 @@ class User:
         self.bad_ticks = 0
         
     def postureBadForLongTime(self):
-        return self.bad_ticks > 30
+        return self.bad_ticks >= 100

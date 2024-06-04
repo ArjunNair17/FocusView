@@ -19,6 +19,7 @@
         "react-native-sound-level": "^1.2.0",
         "react-router-dom": "^6.23.0",
         "react-scripts": "5.0.1",
+        "react-toastify": "^10.0.5",
         "react-webcam": "^7.2.0",
         "reactjs-popup": "^2.0.6",
         "socket.io-client": "^4.7.5",

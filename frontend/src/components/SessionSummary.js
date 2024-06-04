@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ThemeProvider, createTheme, Typography, Box } from '@mui/material';
-import { Gauge } from '@mui/x-charts/Gauge';
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { LineChart } from '@mui/x-charts/LineChart';
 import ReactCardFlip from 'react-card-flip';
 
@@ -89,106 +89,139 @@ function SessionSummary() {
     <div className="App">
       <header className="App-header">
         <ThemeProvider theme={theme}>
-          <Typography variant="h5" style={{ color: '#FFF', marginBottom: '20px' }}>Session Report</Typography>
-
+          <div>
+          <Typography variant="h5" style={{ color: '#FFFFFF', marginBottom: '30px' }}>Session Report</Typography>
+          </div>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <ReactCardFlip isFlipped={isFlipped1} >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div>
-                <Box onClick={handleClick1}
+                <Box 
                   sx={{
-                    width: 372,
-                    height: 525,
+                    width: 400,
+                    height: 250,
                     borderRadius: 5,
-                    marginRight: 2,
-                    bgcolor: 'primary.main',
+                    marginTop: 2,
+                    bgcolor: 'white',
                     '&:hover': {
-                      bgcolor: 'primary.dark',
+                      bgcolor: 'white',
                     },
                     position: 'relative',
                   }}
                 >
-                  <Typography variant="h5" style={{ color: '#FFF', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                  <Typography variant="h5" style={{ color: '#000000',  fontSize: '1.4rem',position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                     Posture
                   </Typography>
-                  <Gauge width={200} height={200} value={posture * 100} color="#FFFFF" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                  <Gauge width={200} height={200} value={posture * 100} color="#008080" 
+                   style={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }} 
+                   sx={(theme) => ({
+                    [`& .${gaugeClasses.valueText}`]: {
+                      fontSize: 40,
+                    },
+                    [`& .${gaugeClasses.valueArc}`]: {
+                      fill: '#008080',
+                    },
+                    [`& .${gaugeClasses.referenceArc}`]: {
+                      fill: theme.palette.text.disabled,
+                    },
+                  })} />
                 </Box>
               </div>
+            
 
               <div>
-                <Box onClick={handleClick1}
+                <Box 
                   sx={{
-                    width: 372,
-                    height: 525,
+                    width: 400,
+                    height: 350,
                     borderRadius: 5,
-                    marginRight: 2,
-                    bgcolor: 'primary.main',
+                    marginTop: 2,
+                    bgcolor: 'white',
                     '&:hover': {
-                      bgcolor: 'primary.dark',
+                      bgcolor: 'white',
                     },
                     position: 'relative',
                   }}
                 >
-                  <Typography variant="h5" style={{ color: '#FFF', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                    Posture
+                  <Typography variant="h5" style={{ color: '#000000', position: 'absolute',fontSize: '1.2rem', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    Posture Trend
                   </Typography>
-                  <LineChart
-                    xAxis={[{ data: postureTrend_Xaxis }]}
-                    series={[{ data: postureTrend }]}
-                    width={370}
-                    height={300}
-                  />
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <LineChart
+                      xAxis={[{ data: postureTrend_Xaxis , label: 'Last 5 sessions from oldest to newest' }]}
+                      series={[{ data: postureTrend }]}
+                      width={370}
+                      height={300}
+                    />
+                  </div>
                 </Box>
               </div>
-            </ReactCardFlip>
+          </div>
 
-            <ReactCardFlip isFlipped={isFlipped2} >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div>
-                <Box onClick={handleClick2}
+                <Box 
                   sx={{
-                    width: 372,
-                    height: 525,
+                    width: 400,
+                    height: 250,
                     borderRadius: 5,
+                    marginTop: 2,
                     marginLeft: 2,
-                    bgcolor: 'primary.main',
+                    bgcolor: 'white',
                     '&:hover': {
-                      bgcolor: 'primary.dark',
+                      bgcolor: 'white',
                     },
                     position: 'relative',
                   }}
                 >
-                  <Typography variant="h5" style={{ color: '#FFF', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                  <Typography variant="h5" style={{ color: '#000000', position: 'absolute', fontSize: '1.4rem', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                     Eye Tracking
                   </Typography>
-                  <Gauge width={200} height={200} value={gaze * 100} style={{ color: '#FFF', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                  <Gauge width={200} height={200} value={gaze * 100}  
+                  style={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }} 
+                  sx={(theme) => ({
+                    [`& .${gaugeClasses.valueText}`]: {
+                      fontSize: 40,
+                    },
+                    [`& .${gaugeClasses.valueArc}`]: {
+                      fill: '#008080',
+                    },
+                    [`& .${gaugeClasses.referenceArc}`]: {
+                      fill: theme.palette.text.disabled,
+                    },
+                  })} />
                 </Box>
               </div>
 
               <div>
-                <Box onClick={handleClick2}
+                <Box 
                   sx={{
-                    width: 372,
-                    height: 525,
+                    width: 400,
+                    height: 350,
                     borderRadius: 5,
+                    marginTop: 2,
                     marginLeft: 2,
-                    bgcolor: 'primary.main',
+                    bgcolor: 'white',
                     '&:hover': {
-                      bgcolor: 'primary.dark',
+                      bgcolor: 'white',
                     },
                     position: 'relative',
                   }}
                 >
-                  <Typography variant="h5" style={{ color: '#FFF', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                    Eye Tracking
+                  <Typography variant="h5" style={{ color: '#000000', position: 'absolute',fontSize: '1.2rem', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    Eye Tracking Trend
                   </Typography>
+                  
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                   <LineChart
-                    xAxis={[{ data: gazeTrend_Xaxis }]}
+                    xAxis={[{ data: gazeTrend_Xaxis, label: 'Last 5 sessions from oldest to newest' }]}
                     series={[{ data: gazeTrend }]}
                     width={370}
                     height={300}
                   />
+                </div>
                 </Box>
               </div>
-            </ReactCardFlip>
+          </div>
           </div>
         </ThemeProvider>
       </header>

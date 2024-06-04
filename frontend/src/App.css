@@ -64,5 +64,5 @@
 /* Target text elements inside LineChart */
 .LineChart-container text {
   /* Set fill color of text to white */
-  fill: #FFF;
+  fill: #000000;
 }

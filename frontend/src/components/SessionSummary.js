@@ -17,6 +17,9 @@ function SessionSummary() {
   const [gazeTrend, setGazeTrend] = useState([]);
   const [postureTrend_Xaxis, setPostureTrend_Xaxis] = useState([]);
   const [gazeTrend_Xaxis, setGazeTrend_Xaxis] = useState([]);
+  const [noiseTrend, setNoiseTrend] = useState([]);
+  const [noiseTrend_Xaxis, setNoiseTrend_Xaxis] = useState([]);
+  const [noise, setNoise] = useState(false);
   
 
   const handleClick1 = (e) => {
@@ -56,14 +59,23 @@ function SessionSummary() {
             setGaze(data.percent_good_gaze);
             setGazeTrend(data.past_5_gaze);
 
+          
+
             setPosture(data.percent_good_posture);
             setPostureTrend(data.past_5_posture);
+
+
+            const lenNoise = data.past_5_noise.length;
+            setNoise(data.past_5_noise[lenNoise -1]);
+            setNoiseTrend(data.past_5_noise);
+
 
             const lenGaze = data.past_5_gaze.length;
             const lenPosture  = data.past_5_posture.length;
 
             const temp_gaze = [];
             const temp_posture = [];
+            const temp_noise = [];
             
             for (let i = 0; i<lenGaze; i++){
               temp_gaze[i] = i+1;
@@ -72,8 +84,13 @@ function SessionSummary() {
             for (let j = 0; j<lenPosture; j++){
               temp_posture[j] = j+1;
             }
+            
+            for(let k = 0;k<lenNoise; k++){
+              temp_noise[k] = k+1;
+            }
             setPostureTrend_Xaxis(temp_posture);
             setGazeTrend_Xaxis(temp_gaze);
+            setNoiseTrend_Xaxis(temp_noise);
 
           }
         });
@@ -222,6 +239,73 @@ function SessionSummary() {
                 </Box>
               </div>
           </div>
+         
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div>
+                <Box 
+                  sx={{
+                    width: 400,
+                    height: 250,
+                    borderRadius: 5,
+                    marginTop: 2,
+                    marginLeft: 2,
+                    bgcolor: 'white',
+                    '&:hover': {
+                      bgcolor: 'white',
+                    },
+                    position: 'relative',
+                  }}
+                >
+                  <Typography variant="h5" style={{ color: '#000000',  fontSize: '1.4rem',position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    Noise Tracking
+                  </Typography>
+                  <Gauge width={200} height={200} value={noise * 100} color="#008080" 
+                   style={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }} 
+                   sx={(theme) => ({
+                    [`& .${gaugeClasses.valueText}`]: {
+                      fontSize: 40,
+                    },
+                    [`& .${gaugeClasses.valueArc}`]: {
+                      fill: '#008080',
+                    },
+                    [`& .${gaugeClasses.referenceArc}`]: {
+                      fill: theme.palette.text.disabled,
+                    },
+                  })} />
+                </Box>
+              </div>
+            
+
+              <div>
+                <Box 
+                  sx={{
+                    width: 400,
+                    height: 350,
+                    borderRadius: 5,
+                    marginTop: 2,
+                    marginLeft: 2,
+                    bgcolor: 'white',
+                    '&:hover': {
+                      bgcolor: 'white',
+                    },
+                    position: 'relative',
+                  }}
+                >
+                  <Typography variant="h5" style={{ color: '#000000', position: 'absolute',fontSize: '1.2rem', top: '10%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    Noise Trend
+                  </Typography>
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <LineChart
+                      xAxis={[{ data: noiseTrend_Xaxis , label: 'Last 5 sessions from oldest to newest' }]}
+                      series={[{ data: noiseTrend }]}
+                      width={370}
+                      height={300}
+                    />
+                  </div>
+                </Box>
+              </div>
+          </div>
+
           </div>
         </ThemeProvider>
       </header>

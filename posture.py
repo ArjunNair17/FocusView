@@ -11,6 +11,7 @@ GoodPostureRSN = 0
 GoodLSNAngle = 0
 GoodRSNAngle = 0
 GoodNSAngle = 0
+GoodMidpoint = 0
 yellow = (0, 255, 255)
 tickCounter = 0
 #distance threshold
@@ -39,6 +40,7 @@ pose = mp_pose.Pose(
     min_tracking_confidence=0.3    # Minimum confidence threshold for pose tracking
 )
 mp_holistic = mp.solutions.holistic
+cap = cv2.VideoCapture(0)
 
 def maxRun(curTime, maxTime):
     print(curTime, "   ", maxTime)
@@ -96,9 +98,8 @@ def draw(frame, keypoints, h, w):
     return [rShoulderX, rShoulderY, lShoulderX, lShoulderY, noseX, noseY, rShoulderPoint, lShoulderPoint, nosePoint]
 
 def doOneFrame(frame):
-    global setInitial, GoodPostureLSN, GoodPostureRSN, Dthreshold, Athreshold, GoodNSAngle, GoodLSNAngle, GoodRSNAngle
+    global setInitial, GoodPostureLSN, GoodPostureRSN, Dthreshold, Athreshold, GoodNSAngle, GoodLSNAngle, GoodRSNAngle, GoodMidpoint
     # Process the image.
-    global h, w
     h,w = frame.shape[:2]
 
      # Process the image.
@@ -117,6 +118,7 @@ def doOneFrame(frame):
         currentRSNAngle = calculateAngle(rShoulderPoint, nosePoint, rShoulderPoint)
         #angle with nose as vertex
         currentNSAngle = calculateAngle(nosePoint, rShoulderPoint, lShoulderPoint)
+        currentMidpoint = calculateDistance((lShoulderX + rShoulderX)/2, (lShoulderY + rShoulderY)/2, noseX, noseY) 
 
 
         if setInitial:
@@ -125,18 +127,18 @@ def doOneFrame(frame):
             GoodLSNAngle = calculateAngle(lShoulderPoint, nosePoint, rShoulderPoint)
             GoodRSNAngle = calculateAngle(rShoulderPoint, nosePoint, rShoulderPoint)
             GoodNSAngle = calculateAngle(nosePoint, rShoulderPoint, lShoulderPoint)
+            GoodMidpoint = calculateDistance((lShoulderX + rShoulderX)/2, (lShoulderY + rShoulderY)/2, noseX, noseY) 
             print(GoodPostureLSN)
             print(GoodPostureRSN)
             setInitial = False
 
-
-
-         #checks if the distance between data points is within threshold
+        #checks if the distance between data points is within threshold
         distanceProportion = float(currentLSN)/float(GoodPostureLSN) <= Dthreshold or float(currentRSN)/float(GoodPostureRSN) <= Dthreshold
         #checks if the angle between datapoints is with threshold
         angleProportion = float(currentNSAngle)/float(GoodNSAngle) <= Athreshold or float(currentLSNAngle)/float(GoodLSNAngle) <= Athreshold  or float(currentRSNAngle)/float(GoodRSNAngle) <= Athreshold
         #checks if shoulders are aligned 
-        shoulderLevel = (lShoulderY/rShoulderY) <= 0.95 or (rShoulderY/lShoulderY) <= 0.95
+        midpointProportion = float(currentMidpoint/GoodMidpoint) >= 0.95
+        print(float(currentMidpoint/GoodMidpoint), midpointProportion)
 
         #condition:
             #if the distance is under proportion return true
@@ -145,11 +147,32 @@ def doOneFrame(frame):
 
         
         if ((distanceProportion)  and  (angleProportion)):
-            if (shoulderLevel):
-                True
+            if(midpointProportion == True):
+                return True
+            #so if midpoint proportion greater than 0.95 return true
             #returns false if they have bad posture
             return False
         else:
             #return true if they have good posture
             return True
         
+while True:
+    # Read a frame from the video capture
+    ret, frame = cap.read()
+
+    # Check if the frame was captured properly
+    if not ret:
+        print("Failed to grab frame")
+        break
+
+    # Show the frame in a window named 'Video Feed'
+    cv2.imshow('Video Feed', frame)
+    print(doOneFrame(frame))
+
+    # Wait for 1 millisecond to check if 'q' is pressed to exit
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release the video capture and close all OpenCV windows
+cap.release()
+cv2.destroyAllWindows()

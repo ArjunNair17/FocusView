@@ -64,7 +64,7 @@ const Register = () => {
     } else  {
         return (
             <div className="App-header">
-                <Container component="main" >
+                
 					<CssBaseline />
 					<Box
 						sx={{
@@ -80,7 +80,7 @@ const Register = () => {
 						// minWidth: '500px', // Minimum height for the box
 						}}
 					>
-					<Typography component="h1" variant="h4" sx={{ color: 'white', fontWeight: 'bold', alignSelf: 'flex-start' }}>
+					<Typography component="h1" variant="h4" sx={{ color: 'white',  position: 'relative', top: '10%', left: '34%', fontWeight: 'bold', alignSelf: 'flex-start' }}>
                         Sign up
                     </Typography>
 					<Box component="form" onSubmit={handleFormSubmit} noValidate sx={{ mt: 1 }}>
@@ -232,7 +232,7 @@ const Register = () => {
                         </Link>
 						</Box>
 					</Box>
-					</Container>
+				
                 {/* <div>Register</div>
                 <form className="form" onSubmit={handleFormSubmit}>
                     <div className="inputs">

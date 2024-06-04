@@ -93,8 +93,10 @@ function Calibration() {
       {/* Render the WebcamCapture component */}
       <header className="App-header">
         <div style={{ marginTop: '20px' }}>
-          <div className='calibrationMessage'>Sit with good posture and look at the screen before pressing begin!</div>
-          <video ref={videoRef} width="640" height="480" autoPlay />
+        <div className='calibrationMessage' style={{ color: '#FFF', marginBottom: '7px', fontSize: '20px' }}>
+          Sit with good posture and look at the screen before pressing begin!
+        </div>
+          <video ref={videoRef} style={{ borderRadius: '20px', overflow: 'hidden' }} width="640" height="480" autoPlay />
         </div>
       <Popup
         open={isOpen}
@@ -121,13 +123,38 @@ function Calibration() {
         </Button>
         </div>
       </Popup>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', marginBottom: '20px' }}>
         <TextField
           id="hours-input"
           label="Hours"
           variant="outlined"
           value={hours}
           onChange={handleHoursChange}
+          sx={{ 
+            marginRight: '20px', // Add margin to the right
+            '& .MuiOutlinedInput-root': {
+                borderRadius: '10px',
+                '& fieldset': {
+                borderColor: 'white',
+                borderWidth: '2px',
+                },
+                '&:hover fieldset': {
+                borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                borderColor: 'white',
+                },
+                '& .MuiOutlinedInput-input': {
+                color: 'white',
+                },
+            },
+            '& .MuiInputLabel-root': {
+                color: 'white',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+                color: 'white',
+            }, 
+        }}
         />
         <TextField
           id="minutes-input"
@@ -135,6 +162,31 @@ function Calibration() {
           variant="outlined"
           value={minutes}
           onChange={handleMinutesChange}
+          sx={{ 
+            marginRight: '20px', // Add margin to the right
+            '& .MuiOutlinedInput-root': {
+                borderRadius: '10px',
+                '& fieldset': {
+                borderColor: 'white',
+                borderWidth: '2px',
+                },
+                '&:hover fieldset': {
+                borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                borderColor: 'white',
+                },
+                '& .MuiOutlinedInput-input': {
+                color: 'white',
+                },
+            },
+            '& .MuiInputLabel-root': {
+                color: 'white',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+                color: 'white',
+            }, 
+        }}
         />
         <TextField
           id="seconds-input"
@@ -142,17 +194,68 @@ function Calibration() {
           variant="outlined"
           value={seconds}
           onChange={handleSecondsChange}
+          sx={{ 
+            '& .MuiOutlinedInput-root': {
+                borderRadius: '10px',
+                '& fieldset': {
+                borderColor: 'white',
+                borderWidth: '2px',
+                },
+                '&:hover fieldset': {
+                borderColor: 'white',
+                },
+                '&.Mui-focused fieldset': {
+                borderColor: 'white',
+                },
+                '& .MuiOutlinedInput-input': {
+                color: 'white',
+                },
+            },
+            '& .MuiInputLabel-root': {
+                color: 'white',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+                color: 'white',
+            }, 
+        }}
         />
         </div>
         
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
           <FormGroup row>
-            <FormControlLabel control={<Checkbox />} label="Posture" />
-            <FormControlLabel control={<Checkbox />} label="Phone Use" />
-            <FormControlLabel control={<Checkbox />} label="Skin Biting" />
-            <FormControlLabel control={<Checkbox />} label="Nail Picking" />
+            <FormControlLabel control={<Checkbox 
+              sx={{ color: 'white',
+              '&.Mui-checked': {
+                color: 'white',
+              },
+              }}
+              />} label="Posture" />
+
+            <FormControlLabel control={<Checkbox 
+            sx={{ color: 'white',
+            '&.Mui-checked': {
+              color: 'white',
+            },
+            }}
+            />} label="Phone Use" />
+
+            <FormControlLabel control={<Checkbox 
+            sx={{ color: 'white',
+            '&.Mui-checked': {
+              color: 'white',
+            },
+            }}
+            />} label="Skin Biting" />
+
+            <FormControlLabel control={<Checkbox 
+            sx={{ color: 'white',
+            '&.Mui-checked': {
+              color: 'white',
+            },
+            }}
+            />} label="Nail Picking" />
           </FormGroup>
-        </div>
+        </div> */}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
           <Button variant="contained" color="inherit">

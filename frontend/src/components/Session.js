@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -17,6 +17,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import * as Tone from 'tone';
+import { useNavigate } from 'react-router-dom';
 
 // Your CircularProgressWithLabel component
 import io from 'socket.io-client';
@@ -310,7 +311,7 @@ function Session() {
   React.useEffect(() => {
     const timer = setInterval(() => {
       if (!isPaused) {
-        setProgress((prevProgress) => (prevProgress + increment >= 100 ? 0 : prevProgress + increment));
+        setProgress((prevProgress) => (prevProgress + increment > 100 ? 100 : prevProgress + increment));
       }
     }, granularity);
 
@@ -337,15 +338,17 @@ function Session() {
     setOpen(false);
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="App">
       <header className="App-header">
 
         <CircularProgressWithLabel value={progress} size={300} />
         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <IconButton>
+          {/* <IconButton>
             <VideoCameraFrontIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-          </IconButton>
+          </IconButton> */}
           <IconButton onClick={handlePauseClick}>
             {isPaused ? (
               <PlayCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
@@ -357,17 +360,32 @@ function Session() {
             <CancelIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
           </IconButton>
         </div>
-        <div>
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255)', 
+            padding: '25px',
+            borderRadius: '10px',
+            // minWidth: '500px', // Minimum height for the box
+            }}
+        > 
+        <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
           {posture}
         </div>
 
-        <div>
+        <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
           {attention}
         </div>
 
-        <div>
+        <div style={{ color: '#00', fontSize: '20px' }}>
           {audioLevel}
         </div>
+          
+        </Box>
+        
         <video ref={videoRef} style={{ display: 'none' }}></video>
         <Dialog
           open={open}
@@ -381,7 +399,7 @@ function Session() {
           <DialogActions>
             <Button onClick={handleClose}>No</Button>
             <Button onClick={handleClose} autoFocus>
-              Yes
+            <a href='/session_summary' style={{ textDecoration: 'none', color: 'inherit' }}>Yes</a>
             </Button>
 
           </DialogActions>

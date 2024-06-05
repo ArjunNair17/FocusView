@@ -4,6 +4,7 @@ import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import { LineChart } from '@mui/x-charts/LineChart';
 import ReactCardFlip from 'react-card-flip';
 
+
 import { EmailAuthCredential, getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, set, get, onValue, update, push } from "firebase/database";
 
@@ -21,6 +22,10 @@ function SessionSummary() {
   const [noiseTrend_Xaxis, setNoiseTrend_Xaxis] = useState([]);
   const [noise, setNoise] = useState(false);
   
+  const yAxisConfig = {
+    min: 0,
+    max: 1,
+  };
 
   const handleClick1 = (e) => {
     e.preventDefault();
@@ -168,6 +173,7 @@ function SessionSummary() {
                       series={[{ data: postureTrend }]}
                       width={370}
                       height={300}
+                      yAxis={[yAxisConfig]}
                     />
                   </div>
                 </Box>
@@ -234,6 +240,7 @@ function SessionSummary() {
                     series={[{ data: gazeTrend }]}
                     width={370}
                     height={300}
+                    yAxis={[yAxisConfig]}
                   />
                 </div>
                 </Box>
@@ -300,6 +307,7 @@ function SessionSummary() {
                       series={[{ data: noiseTrend }]}
                       width={370}
                       height={300}
+                      yAxis={[yAxisConfig]}
                     />
                   </div>
                 </Box>

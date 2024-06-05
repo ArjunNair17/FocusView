@@ -7,7 +7,6 @@ import pic from './FocusViewBackground.jpg';
 
 import { AppBar, Toolbar, IconButton, Typography, Button } from '@mui/material';
 
-
 const Header = () => {
     const navigate = useNavigate()
     const [loggedIn, setLoggedIn] = useState(false)
@@ -41,6 +40,10 @@ const Header = () => {
     //     },
     //   }));
 
+    const stats = () => {
+        window.location.href = '/session_summary'
+    }
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             setLoggedIn(true)
@@ -66,6 +69,7 @@ const Header = () => {
                                 {/* <Button color="inherit" component={Link} to="/stats">Stats</Button> */}
                                 <Button color="inherit" onClick={home} >Home</Button>
                                 <Button color="inherit" onClick={signoff} >Logout</Button>
+                                <Button color="inherit" onClick={stats} >Stats</Button>
                             </Toolbar>
                         </AppBar>
                         {/* // <button onClick={signoff} className='text-sm text-blue-600 underline'>Logout</button> */}
@@ -89,7 +93,7 @@ const Header = () => {
 
                     </>
             }
-
+            {/* </div> */}
         </nav>
     );
 }

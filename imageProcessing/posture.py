@@ -40,7 +40,7 @@ pose = mp_pose.Pose(
     min_tracking_confidence=0.3    # Minimum confidence threshold for pose tracking
 )
 mp_holistic = mp.solutions.holistic
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
 
 def maxRun(curTime, maxTime):
     print(curTime, "   ", maxTime)
@@ -174,5 +174,5 @@ def doOneFrame(frame):
 #         break
 
 # Release the video capture and close all OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
+#cap.release()
+#cv2.destroyAllWindows()

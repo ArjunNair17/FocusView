@@ -44,10 +44,11 @@ const Header = () => {
     //       boxShadow: 'none', // Remove box shadow
     //     },
     //   }));
-
+    /*
     const stats = () => {
         window.location.href = '/session_summary'
     }
+    */
 
     onAuthStateChanged(auth, (user) => {
         if (user) {

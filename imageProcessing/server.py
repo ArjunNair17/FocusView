@@ -33,6 +33,8 @@ refreshTimer = 0
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+print('Hello World!')
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -102,18 +104,18 @@ def handle_video(data):
                 emit('notify_posture', "You've Had Bad Posture For A While!", room=request.sid)
                 currentClient.resetBadTicks()
                
-            print(currentClient.good_ticks/currentClient.total_ticks);
+            print(currentClient.good_ticks/currentClient.total_ticks)
                 
             # faces = face_cascade.detectMultiScale(gray, 1.2, 4)
             # for x, y, w, h in faces:
             #     cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-            cv2.imshow('Video', frame)
-            cv2.waitKey(1)
+            #cv2.imshow('Video', frame)
+            #cv2.waitKey(1)
             # emit('response', len(faces), room=request.sid)
 
     
         # Display the frame for 1 ms and continue
     
 if __name__ == '__main__':
-    socketio.run(app, host='127.0.0.1', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000) #127.0.0.1 #52.15.54.164
     cv2.destroyAllWindows()

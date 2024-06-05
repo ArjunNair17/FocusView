@@ -138,7 +138,7 @@ function Session() {
       });
     }
 
-    socketRef.current = io('http://127.0.0.1:5000', {
+    socketRef.current = io('http://127.0.0.1:5050', {
       transports: ['websocket'],
     });
 

@@ -1,0 +1,57 @@
+class User:
+    def __init__(self, total_ticks, good_ticks, currentBadTicks):
+        self.total_ticks = total_ticks
+        self.good_ticks = good_ticks
+        self.bad_ticks = currentBadTicks
+        self.good_gazeTicks = 0;
+        self.bad_gazeTicks = 0;
+        self.total_gazeTicks = 0;
+        self.timer = 0
+        
+    def to_dict(self):
+        percent = self.good_gazeTicks / self.total_gazeTicks
+        if(percent > .97):
+            percent = 1
+            
+        return {
+            'good_ticks': self.good_ticks,
+            'bad_ticks': self.bad_ticks,
+            'total_ticks': self.total_ticks,
+            'percent_good_posture': self.good_ticks / self.total_ticks,
+            'percent_good_gaze': percent
+            
+        }
+        
+    def timer_(self):
+        return self.timer
+
+    def increaseTimer(self):
+        self.timer += 1
+
+    def resetTimer(self):
+        self.timer = 0
+        
+    def checkTimer(self):
+        return self.timer == 25
+        
+    def increaseGoodTick(self):
+        self.good_ticks += 1
+    
+    def increaseGoodGazeTick(self):
+        self.good_gazeTicks += 1
+        
+    def increaseTick(self):
+        self.total_ticks += 1
+        self.total_gazeTicks += 1;
+        
+    def increaseBadPostureTick(self):
+        self.bad_ticks += 1
+    
+    def increaseBadGazeTick(self):
+        self.bad_gazeTicks += 1
+        
+    def resetBadTicks(self):
+        self.bad_ticks = 0
+        
+    def postureBadForLongTime(self):
+        return self.bad_ticks >= 100

@@ -7,8 +7,7 @@ import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import addNotification from 'react-push-notification';
 import logo from './logo.png'
 import { useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box';

@@ -31,7 +31,12 @@ const Header = () => {
     }
 
     const home = () => {
+       
         window.location.href = '/begin_session';
+    }
+
+    const stats = () => {
+        window.location.href = 'session_summary'
     }
 
     // const useStyles = makeStyles((theme) => ({
@@ -65,7 +70,9 @@ const Header = () => {
                             </Typography> */}
                                 {/* <Button color="inherit" component={Link} to="/stats">Stats</Button> */}
                                 <Button color="inherit" onClick={home} >Home</Button>
+                                <Button color ="inherit" onClick = {stats}>Stats</Button>
                                 <Button color="inherit" onClick={signoff} >Logout</Button>
+                                
                             </Toolbar>
                         </AppBar>
                         {/* // <button onClick={signoff} className='text-sm text-blue-600 underline'>Logout</button> */}

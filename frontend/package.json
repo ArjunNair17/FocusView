@@ -18,6 +18,7 @@
         "react-card-flip": "^1.2.2",
         "react-dom": "^18.3.0",
         "react-native-sound-level": "^1.2.0",
+        "react-push-notification": "^1.5.4",
         "react-router-dom": "^6.23.0",
         "react-scripts": "5.0.1",
         "react-toastify": "^10.0.5",

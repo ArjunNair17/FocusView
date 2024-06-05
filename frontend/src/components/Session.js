@@ -86,6 +86,8 @@ CircularProgressWithLabel.propTypes = {
 
 // Your Page3 component
 function Session() {
+  const navigate = useNavigate();
+
   const [progress, setProgress] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
   const [posture, setPosture] = useState("Good Posture");
@@ -161,120 +163,7 @@ function Session() {
     socketRef.current.on('response_gaze', (data) => {
       setAttention(data);
     });
-    var userName = "";
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        const uid = user.uid;
-        userName = user.uid;
-        const currentEmail = user.email;
-        console.log(user.uid);
-        console.log(userName);
-        console.log("userEmail " + currentEmail);
-        setUser(user.uid);
 
-        const curUserName = userName;
-        console.log("curUserName " + curUserName);
-
-
-
-        socketRef.current.on('custom', (data) => {
-          console.log("HELLLOOOOO!!!")
-          console.log("Disconnect Data " + data);
-          const user = data;
-          const db = getDatabase();
-          console.log(user)
-          const userRef = ref(db, "users/" + uid)
-          var noisePercentage = goodTicks / totalTicks;
-          console.log(noisePercentage);
-
-          if (isNaN(noisePercentage)) {
-            noisePercentage = 1;
-          }
-          get(userRef)
-            .then(snapshot => {
-              if (snapshot.exists()) {
-                const curUser = snapshot.val().past_5_posture;
-                const currentGaze = snapshot.val().past_5_gaze;
-                const currentNoise = snapshot.val().past_5_noise;
-                console.log(snapshot.val());
-
-                console.log(user.percent_good_gaze);
-
-                if (curUser.length >= 20) {
-                  curUser.shift()
-                  curUser.push(user.percent_good_posture)
-                }
-
-                else {
-                  curUser.push(user.percent_good_posture);
-                }
-
-                if (currentGaze.length >= 20) {
-                  currentGaze.shift()
-                  currentGaze.push(user.percent_good_gaze)
-                }
-
-                else {
-                  currentGaze.push(user.percent_good_gaze);
-                }
-
-                if (currentNoise.length >= 20) {
-                  currentNoise.shift()
-                  currentNoise.push(noisePercentage)
-                }
-
-                else {
-                  currentNoise.push(noisePercentage);
-                }
-                console.log(curUser)
-                console.log(currentGaze)
-
-                user.past_5_gaze = currentGaze;
-                user.past_5_posture = curUser;
-                user.past_5_noise = currentNoise;
-                // User exists, update the existing user's information
-                update(userRef, user)
-                  .then(() => {
-                    console.log("User information updated successfully");
-                  })
-                  .catch(error => {
-                    console.error("Error updating user information:", error);
-                  });
-              } else {
-                // User doesn't exist, add a new user using push()
-                const newUserRef = ref(db, 'users/' + uid);
-                const percentPosture = user.percent_good_posture;
-                const percentGaze = user.percent_good_gaze;
-                user.past_5_gaze = []
-                user.past_5_posture = []
-                user.past_5_noise = []
-
-                user.past_5_noise.push(noisePercentage)
-
-                user.past_5_gaze.push(percentGaze)
-                user.past_5_posture.push(percentPosture)
-
-                set(newUserRef, user)
-                  .then(() => {
-                    console.log("New user added successfully");
-                  })
-                  .catch(error => {
-                    console.error("Error adding new user:", error);
-                  });
-              }
-            })
-        });
-
-        // ...
-      } else {
-        console.log("signed out");
-        // User is signed out
-        // ...
-      }
-    });
 
 
     const mic = new Tone.UserMedia();
@@ -397,152 +286,202 @@ function Session() {
 
   };
 
-  const navigate = useNavigate();
 
-  const handleFullClose = () => {
+  const handleFullClose = async () => {
     handleDisconnect();
-    window.location.href = '/session_summary';
-    setOpen(false);
-    
-    // navigate('/session_summary');
-  }
+  
+    const blud = async () => {
+      const auth = getAuth();
+  
+      // Create a promise to wait for the auth state to change
+      const userAuthPromise = new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            resolve(user);
+            unsubscribe(); // Unsubscribe from further auth state changes
+          } else {
+            reject(new Error("User is signed out"));
+          }
+        });
+      });
+  
+      try {
+        const user = await userAuthPromise;
+        const uid = user.uid;
+        const currentEmail = user.email;
+        console.log(user.uid);
+        console.log("userEmail " + currentEmail);
+        setUser(user.uid);
+  
+        // Create a promise that resolves when the 'custom' event is received
+        const customEventPromise = new Promise((resolve, reject) => {
+          socketRef.current.on('custom', async (data) => {
+            console.log("HELLLOOOOO!!!");
+            console.log("Disconnect Data " + data);
+            const userData = data;
+            const db = getDatabase();
+            console.log("user " + userData);
+            console.log(userData.percent_good_posture);
+            const userRef = ref(db, "users/" + uid);
+            var noisePercentage = goodTicks / totalTicks;
+            console.log(noisePercentage);
+  
+            if (isNaN(noisePercentage)) {
+              noisePercentage = 1;
+            }
+            try {
+              const snapshot = await get(userRef);
+              if (snapshot.exists()) {
+                const curUser = snapshot.val().past_5_posture || [];
+                const currentGaze = snapshot.val().past_5_gaze || [];
+                const currentNoise = snapshot.val().past_5_noise || [];
+                console.log(snapshot.val());
+  
+                console.log(userData.percent_good_gaze);
+  
+                if (curUser.length >= 20) {
+                  curUser.shift();
+                  curUser.push(userData.percent_good_posture);
+                } else {
+                  curUser.push(userData.percent_good_posture);
+                }
+  
+                if (currentGaze.length >= 20) {
+                  currentGaze.shift();
+                  currentGaze.push(userData.percent_good_gaze);
+                } else {
+                  currentGaze.push(userData.percent_good_gaze);
+                }
+  
+                if (currentNoise.length >= 20) {
+                  currentNoise.shift();
+                  currentNoise.push(noisePercentage);
+                } else {
+                  currentNoise.push(noisePercentage);
+                }
+                console.log(curUser);
+                console.log(currentGaze);
+  
+                userData.past_5_gaze = currentGaze;
+                userData.past_5_posture = curUser;
+                userData.past_5_noise = currentNoise;
+                // User exists, update the existing user's information
+                await update(userRef, userData);
+                console.log("User information updated successfully");
+                resolve(); // Resolve the promise when update is successful
+              } else {
+                // User doesn't exist, add a new user
+                const newUserRef = ref(db, 'users/' + uid);
+                const percentPosture = userData.percent_good_posture;
+                const percentGaze = userData.percent_good_gaze;
+                userData.past_5_gaze = [];
+                userData.past_5_posture = [];
+                userData.past_5_noise = [];
+  
+                userData.past_5_noise.push(noisePercentage);
+  
+                userData.past_5_gaze.push(percentGaze);
+                userData.past_5_posture.push(percentPosture);
+  
+                await set(newUserRef, userData);
+                console.log("New user added successfully");
+                resolve(); // Resolve the promise when new user is added
+              }
+            } catch (error) {
+              console.error("Error processing user data:", error);
+              reject(error);
+            }
+          });
+        });
+  
+        // Await the custom event before proceeding to the next action
+        await customEventPromise;
+        console.log("Custom event processed, moving to next page.");
+        // Move to another page or perform the next action
+      } catch (error) {
+        console.error("Error processing:", error);
+      }
+    };
+  
+    await blud();
 
+    window.location.href = '/session_summary';
+
+  };
+  
+  // Call the function to start the process
+
+  
 
   return (
     <div className="App">
+      <header className="App-header">
 
-    <header className="App-header">
-
-
-
-      <CircularProgressWithLabel value={progress} size={300} />
-
-      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-
-        {/* <IconButton>
-
-          <VideoCameraFrontIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-
-        </IconButton> */}
-
-        <IconButton onClick={handlePauseClick}>
-
-          {isPaused ? (
-
-            <PlayCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-
-          ) : (
-
-            <PauseCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-
-          )}
-
-        </IconButton>
-
-        <IconButton onClick={handleClickOpen}>
-
-          <CancelIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-
-        </IconButton>
-
-      </div>
-
-      <Box
-
-        sx={{
-
-          marginTop: 8,
-
-          display: 'flex',
-
-          flexDirection: 'column',
-
-          alignItems: 'center',
-
-          backgroundColor: 'rgba(255, 255, 255)', 
-
-          padding: '25px',
-
-          borderRadius: '10px',
-
-          // minWidth: '500px', // Minimum height for the box
-
+        <CircularProgressWithLabel value={progress} size={300} />
+        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+          {/* <IconButton>
+            <VideoCameraFrontIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+          </IconButton> */}
+          <IconButton onClick={handlePauseClick}>
+            {isPaused ? (
+              <PlayCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+            ) : (
+              <PauseCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+            )}
+          </IconButton>
+          <IconButton onClick={handleClickOpen}>
+            <CancelIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+          </IconButton>
+        </div>
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255)',
+            padding: '25px',
+            borderRadius: '10px',
+            // minWidth: '500px', // Minimum height for the box
           }}
+        >
+          <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
+            {posture}
+          </div>
 
-      > 
+          <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
+            {attention}
+          </div>
 
-      <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
+          <div style={{ color: '#00', fontSize: '20px' }}>
+            {audioLevel}
+          </div>
 
-        {posture}
+        </Box>
 
-      </div>
+        <video ref={videoRef} style={{ display: 'none' }}></video>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"End Session?"}
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={handleClose}>No</Button>
+            <Button onClick={handleFullClose} autoFocus>
+              Yes
+            </Button>
 
-
-
-      <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
-
-        {attention}
-
-      </div>
-
-
-
-      <div style={{ color: '#00', fontSize: '20px' }}>
-
-        {audioLevel}
-
-      </div>
-
-        
-
-      </Box>
-
-      
-
-      <video ref={videoRef} style={{ display: 'none' }}></video>
-
-      <Dialog
-
-        open={open}
-
-        onClose={handleClose}
-
-        aria-labelledby="alert-dialog-title"
-
-        aria-describedby="alert-dialog-description"
-
-      >
-
-        <DialogTitle id="alert-dialog-title">
-
-          {"End Session?"}
-
-        </DialogTitle>
-
-        <DialogActions>
-
-          <Button onClick={handleClose}>No</Button>
-
-          <Button onClick={handleClose} autoFocus>
-
-          
-
-          <Button onClick={handleFullClose}>Yes </Button>
-            <Link to="/session_summary"></Link>
-          </Button>
-
-
-
-        </DialogActions>
-
-      </Dialog>
-
-    </header>
-
-  </div>
-
-);
-  
+          </DialogActions>
+        </Dialog>
+      </header>
+    </div>
+  );
 }
+
+
 
 export { Session, CircularProgressWithLabel };

@@ -9,12 +9,16 @@ class User:
         self.timer = 0
         
     def to_dict(self):
+        percent = self.good_gazeTicks / self.total_gazeTicks
+        if(percent > .97):
+            percent = 1
+            
         return {
             'good_ticks': self.good_ticks,
             'bad_ticks': self.bad_ticks,
             'total_ticks': self.total_ticks,
             'percent_good_posture': self.good_ticks / self.total_ticks,
-            'percent_good_gaze': self.good_gazeTicks / self.total_gazeTicks
+            'percent_good_gaze': percent
             
         }
         

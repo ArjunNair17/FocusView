@@ -57,6 +57,7 @@ export default function Login() {
 			navigate('/')
 		} catch (err) {
 			console.log(err)
+            alert("Invalid Credentials")
 		}
 	}
 

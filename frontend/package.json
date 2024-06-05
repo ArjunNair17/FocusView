@@ -13,6 +13,7 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "firebase": "^10.12.0",
+        "mui-styles": "^2.0.5",
         "react": "^18.3.0",
         "react-card-flip": "^1.2.2",
         "react-dom": "^18.3.0",

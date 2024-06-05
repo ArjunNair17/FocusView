@@ -47,7 +47,6 @@ export default function Login() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [loggedIn, setLoggedIn] = useState(false)
-	const [errorMessage, setErrorMessage] = useState("")
 
 	const navigate = useNavigate();
 	async function handleFormSubmit(e) {
@@ -56,9 +55,8 @@ export default function Login() {
 			await signInWithEmailAndPassword(auth, email, password)
 			setLoggedIn(true)
 			navigate('/')
-		} catch (error) {
-			console.log(error)
-			setErrorMessage(error.message)
+		} catch (err) {
+			console.log(err)
 		}
 	}
 
@@ -68,7 +66,6 @@ export default function Login() {
 			setLoggedIn(true)
 		} catch (error) {
 			console.error(error)
-			setErrorMessage(error.message)
 		}
 	}
 
@@ -91,8 +88,8 @@ export default function Login() {
         return (
             <ThemeProvider theme={defaultTheme}>
                 <div className="App-header"> {/* Apply the class here */}
-                    <Container component="main" >
-                    <CssBaseline />
+                    
+                    <CssBaseline>
                     <Box
                         sx={{
                         marginTop: 8,
@@ -107,10 +104,10 @@ export default function Login() {
                         // minWidth: '500px', // Minimum height for the box
                         }}
                     >
-                    <Typography component="h1" variant="h4" sx={{ color: 'white', fontWeight: 'bold', alignSelf: 'flex-start' }}>
-                        Welcome back.<br />
-                        Login to your account
+                    <Typography component="h1" variant="h4" sx={{ color: 'white', position: 'relative', top: '10%', left: '34%', fontWeight: 'bold', alignSelf: 'flex-start' }}>
+                        Welcome!<br />
                     </Typography>
+                    
                     <Box component="form" onSubmit={handleFormSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
@@ -182,9 +179,6 @@ export default function Login() {
                                 }, 
                             }}
                         />
-						<Typography sx={{ color: 'white', fontWeight: 'normal', alignSelf: 'flex-start' }}>
-							{ errorMessage }
-						</Typography>
                         <Button
                             type="submit"
                             fullWidth
@@ -227,7 +221,7 @@ export default function Login() {
                         </Link>
                         </Box>
                     </Box>
-                    </Container>
+                    </CssBaseline>
                 </div>
             </ThemeProvider>
         );

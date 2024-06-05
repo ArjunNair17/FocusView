@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import logo from './logo.png'
+import { useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -33,27 +33,49 @@ import { getDatabase, ref, set, get, onValue, update, push } from "firebase/data
 
 
 function CircularProgressWithLabel(props) {
+
   return (
+
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+
       <CircularProgress variant="determinate" {...props} />
+
       <Box
+
         sx={{
+
           top: 0,
+
           left: 0,
+
           bottom: 0,
+
           right: 0,
+
           position: 'absolute',
+
           display: 'flex',
+
           alignItems: 'center',
+
           justifyContent: 'center',
+
         }}
+
       >
+
         <Typography variant="header" component="div" style={{ color: '#FFF' }}>
+
           {"Study " + `${Math.round(props.value)}%`}
+
         </Typography>
+
       </Box>
+
     </Box>
+
   );
+
 }
 
 CircularProgressWithLabel.propTypes = {
@@ -75,8 +97,9 @@ function Session() {
   const socketRef = useRef(null);
   const [currentUser, setUser] = useState("");
 
-  
+
   const handleDisconnect = (() => {
+    console.log("HELLOOOO!!!!")
     if (socketRef.current) {
       socketRef.current.emit("handleDisc");
     }
@@ -113,25 +136,24 @@ function Session() {
         }
       });
     }
-    
+
     socketRef.current = io('http://127.0.0.1:5000', {
       transports: ['websocket'],
     });
 
     socketRef.current.on('response_posture', (data) => {
       setPosture(data);
-      
+
     });
 
     socketRef.current.on('notify_posture', (data) => {
       console.log("Got here1 bro")
-      const transparentIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/w8AAwAB/3+BqZcAAAAASUVORK5CYII=';
 
       if (Notification.permission === 'granted') {
         console.log("hellooooooo!")
         new Notification('FocusView', {
           body: data,
-          icon:transparentIcon
+          icon: logo
         });
       }
     });
@@ -155,18 +177,20 @@ function Session() {
 
         const curUserName = userName;
         console.log("curUserName " + curUserName);
-       
+
 
 
         socketRef.current.on('custom', (data) => {
+          console.log("HELLLOOOOO!!!")
           console.log("Disconnect Data " + data);
           const user = data;
           const db = getDatabase();
+          console.log(user)
           const userRef = ref(db, "users/" + uid)
           var noisePercentage = goodTicks / totalTicks;
           console.log(noisePercentage);
 
-          if(isNaN(noisePercentage)) {
+          if (isNaN(noisePercentage)) {
             noisePercentage = 1;
           }
           get(userRef)
@@ -207,7 +231,7 @@ function Session() {
                 }
                 console.log(curUser)
                 console.log(currentGaze)
-                
+
                 user.past_5_gaze = currentGaze;
                 user.past_5_posture = curUser;
                 user.past_5_noise = currentNoise;
@@ -263,7 +287,7 @@ function Session() {
     const interval = setInterval(() => {
       const level = meter.getValue();
 
-      if(level > -35) {
+      if (level > -35) {
         setAudioLevel("Too Loud")
       }
 
@@ -278,13 +302,13 @@ function Session() {
     }, 250);
 
 
-    navigator.mediaDevices.getUserMedia({ video: true})
+    navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = () => {
           videoRef.current.play();
         };
-      
+
         const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8' });
         if (videoRef.current !== null) {
           mediaRecorder.ondataavailable = async (event) => {
@@ -358,67 +382,167 @@ function Session() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
+
     setOpen(true);
+
   };
 
+
+
   const handleClose = () => {
-    handleDisconnect();
+
+    //handleDisconnect();
+
     setOpen(false);
+
   };
+
+  const navigate = useNavigate();
+
+  const handleFullClose = () => {
+    handleDisconnect();
+    window.location.href = '/session_summary';
+    setOpen(false);
+    
+    // navigate('/session_summary');
+  }
+
 
   return (
     <div className="App">
-      <header className="App-header">
 
-        <CircularProgressWithLabel value={progress} size={300} />
-        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <IconButton>
-            <VideoCameraFrontIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-          </IconButton>
-          <IconButton onClick={handlePauseClick}>
-            {isPaused ? (
-              <PlayCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-            ) : (
-              <PauseCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-            )}
-          </IconButton>
-          <IconButton onClick={handleClickOpen}>
-            <CancelIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
-          </IconButton>
-        </div>
-        <div>
-          {posture}
-        </div>
+    <header className="App-header">
 
-        <div>
-          {attention}
-        </div>
 
-        <div>
-          {audioLevel}
-        </div>
-        <video ref={videoRef} style={{ display: 'none' }}></video>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"End Session?"}
-          </DialogTitle>
-          <DialogActions>
-            <Button onClick={handleClose}>No</Button>
-            <Button onClick={handleClose} autoFocus>
-              Yes
-            </Button>
 
-          </DialogActions>
-        </Dialog>
-        <ToastContainer />
-      </header>
-    </div>
-  );
+      <CircularProgressWithLabel value={progress} size={300} />
+
+      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+
+        {/* <IconButton>
+
+          <VideoCameraFrontIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+
+        </IconButton> */}
+
+        <IconButton onClick={handlePauseClick}>
+
+          {isPaused ? (
+
+            <PlayCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+
+          ) : (
+
+            <PauseCircleIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+
+          )}
+
+        </IconButton>
+
+        <IconButton onClick={handleClickOpen}>
+
+          <CancelIcon style={{ fontSize: 40, color: '#FFFFFF' }} />
+
+        </IconButton>
+
+      </div>
+
+      <Box
+
+        sx={{
+
+          marginTop: 8,
+
+          display: 'flex',
+
+          flexDirection: 'column',
+
+          alignItems: 'center',
+
+          backgroundColor: 'rgba(255, 255, 255)', 
+
+          padding: '25px',
+
+          borderRadius: '10px',
+
+          // minWidth: '500px', // Minimum height for the box
+
+          }}
+
+      > 
+
+      <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
+
+        {posture}
+
+      </div>
+
+
+
+      <div style={{ color: '#00', marginBottom: '7px', fontSize: '20px' }}>
+
+        {attention}
+
+      </div>
+
+
+
+      <div style={{ color: '#00', fontSize: '20px' }}>
+
+        {audioLevel}
+
+      </div>
+
+        
+
+      </Box>
+
+      
+
+      <video ref={videoRef} style={{ display: 'none' }}></video>
+
+      <Dialog
+
+        open={open}
+
+        onClose={handleClose}
+
+        aria-labelledby="alert-dialog-title"
+
+        aria-describedby="alert-dialog-description"
+
+      >
+
+        <DialogTitle id="alert-dialog-title">
+
+          {"End Session?"}
+
+        </DialogTitle>
+
+        <DialogActions>
+
+          <Button onClick={handleClose}>No</Button>
+
+          <Button onClick={handleClose} autoFocus>
+
+          
+
+          <Button onClick={handleFullClose}>Yes </Button>
+            <Link to="/session_summary"></Link>
+          </Button>
+
+
+
+        </DialogActions>
+
+      </Dialog>
+
+    </header>
+
+  </div>
+
+);
+  
 }
 
 export { Session, CircularProgressWithLabel };

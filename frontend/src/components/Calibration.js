@@ -51,6 +51,7 @@ function Calibration() {
     localStorage.setItem('hours', hours)
     localStorage.setItem('minutes', minutes)
     localStorage.setItem('seconds', seconds)
+    window.location.href = '/session';
     // window.hours = hours;
     // window.minutes = minutes;
     // window.seconds = seconds;
@@ -76,103 +77,393 @@ function Calibration() {
         console.error('Error accessing webcam:', error);
       });
 
-  
-    return () => {
-        cleanupVideoStream();
-    };
-    }
-  , []);
-  
 
- 
+    return () => {
+      cleanupVideoStream();
+    };
+  }
+    , []);
+
+
+
 
 
 
   return (
     <div className="App">
+
       {/* Render the WebcamCapture component */}
+
       <header className="App-header">
+
         <div style={{ marginTop: '20px' }}>
-          <div className='calibrationMessage'>Sit with good posture and look at the screen before pressing begin!</div>
-          <video ref={videoRef} width="640" height="480" autoPlay />
+
+          <div className='calibrationMessage' style={{ color: '#FFF', marginBottom: '7px', fontSize: '20px' }}>
+
+            Sit with good posture and look at the screen before pressing begin!
+
+          </div>
+
+          <video ref={videoRef} style={{ borderRadius: '20px', overflow: 'hidden' }} width="640" height="480" autoPlay />
+
         </div>
-      <Popup
-        open={isOpen}
-        modal
-        onClose={closeModal}
-        contentStyle={{
-          width: '623px',
-          padding: '30px',
-          borderRadius: '15px',
-          height: '505px',
-          backgroundColor: 'white',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}
-      >
-        <div style={{ marginTop: '10px' }}>Recalibrating...</div>
-        <div style={{ marginTop: '30px' }}>
-          {/* <video ref={videoRef} width="640" height="480" autoPlay /> */}
+
+        <Popup
+
+          open={isOpen}
+
+          modal
+
+          onClose={closeModal}
+
+          contentStyle={{
+
+            width: '623px',
+
+            padding: '30px',
+
+            borderRadius: '15px',
+
+            height: '505px',
+
+            backgroundColor: 'white',
+
+            display: 'flex',
+
+            flexDirection: 'column',
+
+            alignItems: 'center'
+
+          }}
+
+        >
+
+          <div style={{ marginTop: '10px' }}>Recalibrating...</div>
+
+          <div style={{ marginTop: '30px' }}>
+
+            {/* <video ref={videoRef} width="640" height="480" autoPlay /> */}
+
+          </div>
+
+          <div style={{ marginTop: '42px' }}>
+
+            <Button variant="contained" color="primary" onClick={closeModal}>
+
+              Cancel
+
+            </Button>
+
+          </div>
+
+        </Popup>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', marginBottom: '20px' }}>
+
+          <TextField
+
+            id="hours-input"
+
+            label="Hours"
+
+            variant="outlined"
+
+            value={hours}
+
+            onChange={handleHoursChange}
+
+            sx={{
+
+              marginRight: '20px', // Add margin to the right
+
+              '& .MuiOutlinedInput-root': {
+
+                borderRadius: '10px',
+
+                '& fieldset': {
+
+                  borderColor: 'white',
+
+                  borderWidth: '2px',
+
+                },
+
+                '&:hover fieldset': {
+
+                  borderColor: 'white',
+
+                },
+
+                '&.Mui-focused fieldset': {
+
+                  borderColor: 'white',
+
+                },
+
+                '& .MuiOutlinedInput-input': {
+
+                  color: 'white',
+
+                },
+
+              },
+
+              '& .MuiInputLabel-root': {
+
+                color: 'white',
+
+              },
+
+              '& .MuiInputLabel-root.Mui-focused': {
+
+                color: 'white',
+
+              },
+
+            }}
+
+          />
+
+          <TextField
+
+            id="minutes-input"
+
+            label="Minutes"
+
+            variant="outlined"
+
+            value={minutes}
+
+            onChange={handleMinutesChange}
+
+            sx={{
+
+              marginRight: '20px', // Add margin to the right
+
+              '& .MuiOutlinedInput-root': {
+
+                borderRadius: '10px',
+
+                '& fieldset': {
+
+                  borderColor: 'white',
+
+                  borderWidth: '2px',
+
+                },
+
+                '&:hover fieldset': {
+
+                  borderColor: 'white',
+
+                },
+
+                '&.Mui-focused fieldset': {
+
+                  borderColor: 'white',
+
+                },
+
+                '& .MuiOutlinedInput-input': {
+
+                  color: 'white',
+
+                },
+
+              },
+
+              '& .MuiInputLabel-root': {
+
+                color: 'white',
+
+              },
+
+              '& .MuiInputLabel-root.Mui-focused': {
+
+                color: 'white',
+
+              },
+
+            }}
+
+          />
+
+          <TextField
+
+            id="seconds-input"
+
+            label="Seconds"
+
+            variant="outlined"
+
+            value={seconds}
+
+            onChange={handleSecondsChange}
+
+            sx={{
+
+              '& .MuiOutlinedInput-root': {
+
+                borderRadius: '10px',
+
+                '& fieldset': {
+
+                  borderColor: 'white',
+
+                  borderWidth: '2px',
+
+                },
+
+                '&:hover fieldset': {
+
+                  borderColor: 'white',
+
+                },
+
+                '&.Mui-focused fieldset': {
+
+                  borderColor: 'white',
+
+                },
+
+                '& .MuiOutlinedInput-input': {
+
+                  color: 'white',
+
+                },
+
+              },
+
+              '& .MuiInputLabel-root': {
+
+                color: 'white',
+
+              },
+
+              '& .MuiInputLabel-root.Mui-focused': {
+
+                color: 'white',
+
+              },
+
+            }}
+
+          />
+
         </div>
-        <div style={{ marginTop: '42px' }}>
-        <Button variant="contained" color="primary" onClick={closeModal}>
-          Cancel
-        </Button>
-        </div>
-      </Popup>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <TextField
-          id="hours-input"
-          label="Hours"
-          variant="outlined"
-          value={hours}
-          onChange={handleHoursChange}
-        />
-        <TextField
-          id="minutes-input"
-          label="Minutes"
-          variant="outlined"
-          value={minutes}
-          onChange={handleMinutesChange}
-        />
-        <TextField
-          id="seconds-input"
-          label="Seconds"
-          variant="outlined"
-          value={seconds}
-          onChange={handleSecondsChange}
-        />
-        </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <FormGroup row>
-            <FormControlLabel control={<Checkbox />} label="Posture" />
-            <FormControlLabel control={<Checkbox />} label="Phone Use" />
-            <FormControlLabel control={<Checkbox />} label="Skin Biting" />
-            <FormControlLabel control={<Checkbox />} label="Nail Picking" />
-          </FormGroup>
-        </div>
+
+
+
+        {/* <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
+
+        <FormGroup row>
+
+          <FormControlLabel control={<Checkbox 
+
+            sx={{ color: 'white',
+
+            '&.Mui-checked': {
+
+              color: 'white',
+
+            },
+
+            }}
+
+            />} label="Posture" />
+
+
+
+          <FormControlLabel control={<Checkbox 
+
+          sx={{ color: 'white',
+
+          '&.Mui-checked': {
+
+            color: 'white',
+
+          },
+
+          }}
+
+          />} label="Phone Use" />
+
+
+
+          <FormControlLabel control={<Checkbox 
+
+          sx={{ color: 'white',
+
+          '&.Mui-checked': {
+
+            color: 'white',
+
+          },
+
+          }}
+
+          />} label="Skin Biting" />
+
+
+
+          <FormControlLabel control={<Checkbox 
+
+          sx={{ color: 'white',
+
+          '&.Mui-checked': {
+
+            color: 'white',
+
+          },
+
+          }}
+
+          />} label="Nail Picking" />
+
+        </FormGroup>
+
+      </div> */}
+
+
 
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '300px' }}>
+
           <Button variant="contained" color="inherit">
+
             <a href='/' style={{ textDecoration: 'none', color: 'inherit' }}>cancel</a>
+
             {/* <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>cancel</Link> */}
-          </Button>
-          
-          <Button variant="contained" color="inherit" onClick={handleSubmit}>
-            
-            <a href='/session' style={{ textDecoration: 'none', color: 'inherit' }}>begin</a>
-            {/* <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link> */}
+
           </Button>
 
-            {/* <Button onClick={handleDisconnect}>
-              Disconnect
-            </Button> */}
+
+
+          <Button variant="contained" color="inherit" onClick={handleSubmit}>
+
+              Submit
+
+            {/* <a href='/session' style={{ textDecoration: 'none', color: 'inherit' }}>begin</a> */}
+
+            {/* <Link to="/session" style={{ textDecoration: 'none', color: 'inherit' }}>Begin</Link> */}
+
+          </Button>
+
+
+
+          {/* <Button onClick={handleDisconnect}>
+
+            Disconnect
+
+          </Button> */}
+
         </div>
 
-        
+
+
+
+
       </header>
+
     </div>
   );
 }

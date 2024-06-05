@@ -41,14 +41,19 @@ def handle_connect():
     
 @socketio.on('handleDisc')
 def handleDisc():
-    user_data = clients[request.sid].to_dict()
-    emit("custom", user_data, room=request.sid)
-    clients.pop(request.sid)
+    if(clients.get(request.sid) != None):
+
+        user_data = clients[request.sid].to_dict()
+        emit("custom", user_data, room=request.sid)
+        clients.pop(request.sid)
 
 @socketio.on('disconnect')
 def handle_disconnect():
     print('Client disconnected')
-    print(clients[request.sid].total_ticks)
+    
+    if(clients.get(request.sid) != None):
+
+        print(clients[request.sid].total_ticks)
    
 
 @socketio.on('videoData')

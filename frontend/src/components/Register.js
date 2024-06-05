@@ -16,7 +16,6 @@ const Register = () => {
     const [password, setPassword] = useState("")
     const [confirmpassword, setConfirmPassword] = useState("")
     const [loggedIn, setLoggedIn] = useState(false)
-	const [errorMessage, setErrorMessage] = useState("")
 
     const navigate = useNavigate();
 
@@ -30,10 +29,9 @@ const Register = () => {
                 navigate('/Login')
             } catch (err) {
                 console.log(err)
-				setErrorMessage(err.message)
             }
         } else {
-			setErrorMessage("Passwords do not match!")
+            console.log("Passwords do not match!")
         }
     }
 
@@ -43,7 +41,6 @@ const Register = () => {
             setLoggedIn(true)
         } catch (error) {
             console.error(error)
-			setErrorMessage(error.message)
         }
     }
 
@@ -67,7 +64,7 @@ const Register = () => {
     } else  {
         return (
             <div className="App-header">
-                <Container component="main" >
+                
 					<CssBaseline />
 					<Box
 						sx={{
@@ -83,7 +80,7 @@ const Register = () => {
 						// minWidth: '500px', // Minimum height for the box
 						}}
 					>
-					<Typography component="h1" variant="h4" sx={{ color: 'white', fontWeight: 'bold', alignSelf: 'flex-start' }}>
+					<Typography component="h1" variant="h4" sx={{ color: 'white',  position: 'relative', top: '10%', left: '34%', fontWeight: 'bold', alignSelf: 'flex-start' }}>
                         Sign up
                     </Typography>
 					<Box component="form" onSubmit={handleFormSubmit} noValidate sx={{ mt: 1 }}>
@@ -193,9 +190,6 @@ const Register = () => {
 								}, 
 							}}
 						/>
-						<Typography sx={{ color: 'white', fontWeight: 'normal', alignSelf: 'flex-start'}}>
-							{ errorMessage }
-						</Typography>
 						<Button
 							type="submit"
 							fullWidth
@@ -238,7 +232,7 @@ const Register = () => {
                         </Link>
 						</Box>
 					</Box>
-					</Container>
+				
                 {/* <div>Register</div>
                 <form className="form" onSubmit={handleFormSubmit}>
                     <div className="inputs">

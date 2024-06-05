@@ -11,6 +11,7 @@ import UserStats from './components/UserStats';
 
 function App() {
    return (
+	<div className='App'>
 			<Router>
 				<Header />
 				<Routes>
@@ -24,6 +25,7 @@ function App() {
 					<Route path='/user' element={<UserStats />} />
 				</Routes>
 			</Router>
+	</div>
 	);
 }
 

@@ -156,22 +156,22 @@ def doOneFrame(frame):
             #return true if they have good posture
             return True
         
-while True:
-    # Read a frame from the video capture
-    ret, frame = cap.read()
+# while True:
+#     # Read a frame from the video capture
+#     ret, frame = cap.read()
 
-    # Check if the frame was captured properly
-    if not ret:
-        print("Failed to grab frame")
-        break
+#     # Check if the frame was captured properly
+#     if not ret:
+#         print("Failed to grab frame")
+#         break
 
-    # Show the frame in a window named 'Video Feed'
-    cv2.imshow('Video Feed', frame)
-    print(doOneFrame(frame))
+#     # Show the frame in a window named 'Video Feed'
+#     cv2.imshow('Video Feed', frame)
+#     print(doOneFrame(frame))
 
-    # Wait for 1 millisecond to check if 'q' is pressed to exit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+#     # Wait for 1 millisecond to check if 'q' is pressed to exit
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
 
 # Release the video capture and close all OpenCV windows
 cap.release()

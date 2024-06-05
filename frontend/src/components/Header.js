@@ -7,7 +7,6 @@ import pic from './FocusViewBackground.jpg';
 
 import { AppBar, Toolbar, IconButton, Typography, Button } from '@mui/material';
 
-
 const Header = () => {
     const navigate = useNavigate()
     const [loggedIn, setLoggedIn] = useState(false)
@@ -45,6 +44,10 @@ const Header = () => {
     //       boxShadow: 'none', // Remove box shadow
     //     },
     //   }));
+
+    const stats = () => {
+        window.location.href = '/session_summary'
+    }
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -96,7 +99,7 @@ const Header = () => {
 
                     </>
             }
-
+            {/* </div> */}
         </nav>
     );
 }

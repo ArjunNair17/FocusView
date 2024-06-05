@@ -56,11 +56,7 @@ const Register = () => {
     
     if (loggedIn)
     {
-        return (
-            <div>
-                Welcome back { auth.currentUser.displayName }!
-            </div>
-        )
+        navigate('/')
     } else  {
         return (
             <div className="App-header">
